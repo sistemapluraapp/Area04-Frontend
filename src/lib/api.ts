@@ -4,9 +4,23 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? ''
 
 export class ApiError extends Error {}
 
+function redirecionarParaLogin() {
+  if (
+    typeof window !== 'undefined' &&
+    window.location.pathname !== '/login' &&
+    window.location.pathname !== '/signup'
+  ) {
+    window.location.href = '/login'
+  }
+}
+
 async function tentarRenovarSessao(): Promise<boolean> {
   const refreshToken = obterRefreshToken()
-  if (!refreshToken) return false
+  if (!refreshToken) {
+    limparSessao()
+    redirecionarParaLogin()
+    return false
+  }
   try {
     const res = await fetch(`${BASE_URL}/auth/refresh`, {
       method: 'POST',
@@ -15,12 +29,15 @@ async function tentarRenovarSessao(): Promise<boolean> {
     })
     if (!res.ok) {
       limparSessao()
+      redirecionarParaLogin()
       return false
     }
     const data = await res.json()
     salvarSessao(data)
     return true
   } catch {
+    limparSessao()
+    redirecionarParaLogin()
     return false
   }
 }
