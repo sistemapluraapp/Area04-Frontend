@@ -16,6 +16,7 @@ jobs:
       - run: npm run build
         env:
           NEXT_PUBLIC_BACKEND_URL: https://area04-backend.sistemapluraapp.workers.dev
+          NEXT_PUBLIC_AREA03_FRONTEND_URL: https://area03-frontend.pages.dev
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
