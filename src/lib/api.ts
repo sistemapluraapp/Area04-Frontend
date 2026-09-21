@@ -89,6 +89,19 @@ export interface ConviteGov {
   usado_em: string | null
 }
 
+export interface Notificacao {
+  id: string
+  tipo: string
+  titulo: string
+  corpo: string
+  entidade_tipo: string | null
+  entidade_id: string | null
+  lida: boolean
+  lida_em: string | null
+  criada_em: string
+  metadata: Record<string, unknown>
+}
+
 export const api = {
   signup: (body: { codigo: string; nome: string; email: string; password: string }) =>
     request<AuthResponse | { message: string; pending_email_confirmation: true }>('/auth/signup', {
@@ -120,4 +133,15 @@ export const api = {
     request<ConviteGov>('/convites-gov', { method: 'POST', body: JSON.stringify(body) }),
 
   listarConvites: () => request<{ convites: ConviteGov[] }>('/convites-gov'),
+
+  listarNotificacoes: (apenasNaoLidas?: boolean) =>
+    request<{ notificacoes: Notificacao[] }>(
+      apenasNaoLidas ? '/notificacoes?status=nao_lidas&limit=30' : '/notificacoes?limit=30'
+    ),
+
+  contarNaoLidas: () => request<{ total: number }>('/notificacoes/contagem-nao-lidas'),
+
+  marcarNotificacaoComoLida: (id: string) => request<void>(`/notificacoes/${id}/ler`, { method: 'PATCH' }),
+
+  marcarTodasNotificacoesComoLidas: () => request<void>('/notificacoes/marcar-todas-lidas', { method: 'PATCH' }),
 }
