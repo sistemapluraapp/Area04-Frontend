@@ -4,15 +4,18 @@ import type { AuthResponse } from './api'
 
 const TOKEN_KEY = 'plura_admin_token'
 const USER_KEY = 'plura_admin_user'
+const REFRESH_KEY = 'plura_admin_refresh_token'
 
 export function salvarSessao(auth: AuthResponse) {
   localStorage.setItem(TOKEN_KEY, auth.access_token)
   localStorage.setItem(USER_KEY, JSON.stringify(auth.user))
+  localStorage.setItem(REFRESH_KEY, auth.refresh_token)
 }
 
 export function limparSessao() {
   localStorage.removeItem(TOKEN_KEY)
   localStorage.removeItem(USER_KEY)
+  localStorage.removeItem(REFRESH_KEY)
 }
 
 export function obterUsuarioSalvo(): AuthResponse['user'] | null {
@@ -24,6 +27,11 @@ export function obterUsuarioSalvo(): AuthResponse['user'] | null {
   } catch {
     return null
   }
+}
+
+export function obterRefreshToken(): string | null {
+  if (typeof window === 'undefined') return null
+  return localStorage.getItem(REFRESH_KEY)
 }
 
 export function estaLogado(): boolean {
