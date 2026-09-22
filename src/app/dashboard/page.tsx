@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import {
   Bar,
   BarChart,
@@ -15,7 +16,16 @@ import AdminNav, { useRequireAuth } from '@/components/AdminNav'
 import GlassCard from '@/components/GlassCard'
 import Grain from '@/components/Grain'
 import Footer from '@/components/Footer'
-import { api, type Estatisticas, type Indicadores } from '@/lib/api'
+import { api, type Estatisticas, type Indicadores, type Pagina } from '@/lib/api'
+
+const EmpreendimentosMap = dynamic(() => import('@/components/EmpreendimentosMap'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ width: '100%', height: 360, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>
+      carregando mapa…
+    </div>
+  ),
+})
 
 const CHART_BLUE = '#3d94ff'
 const CHART_AMBER = '#f0b429'
@@ -132,6 +142,8 @@ export default function DashboardPage() {
   const [erro, setErro] = useState('')
   const [estatisticas, setEstatisticas] = useState<Estatisticas | null>(null)
   const [erroEstatisticas, setErroEstatisticas] = useState('')
+  const [paginas, setPaginas] = useState<Pagina[]>([])
+  const [erroPaginas, setErroPaginas] = useState('')
 
   useEffect(() => {
     if (!pronto) return
@@ -143,6 +155,10 @@ export default function DashboardPage() {
       .estatisticas()
       .then(setEstatisticas)
       .catch((e) => setErroEstatisticas(e instanceof Error ? e.message : 'Erro ao carregar estatísticas'))
+    api
+      .listarPaginas()
+      .then((r) => setPaginas(r.paginas))
+      .catch((e) => setErroPaginas(e instanceof Error ? e.message : 'Erro ao carregar empreendimentos'))
   }, [pronto])
 
   if (!pronto) return null
@@ -219,6 +235,16 @@ export default function DashboardPage() {
               />
             </div>
           )}
+
+          <h2 style={{ fontSize: '1.125rem', fontWeight: 800, letterSpacing: '-0.02em', margin: '2.5rem 0 1.5rem' }}>
+            Empreendimentos no mapa
+          </h2>
+
+          {erroPaginas && <ErroBanner mensagem={erroPaginas} />}
+
+          <GlassCard style={{ padding: '1.5rem' }}>
+            <EmpreendimentosMap paginas={paginas} />
+          </GlassCard>
         </main>
         <Footer />
       </div>
