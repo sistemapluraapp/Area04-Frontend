@@ -9,12 +9,14 @@ import Grain from '@/components/Grain'
 import Footer from '@/components/Footer'
 import { KeyIcon } from '@/components/icons'
 import { api, type ConviteGov } from '@/lib/api'
+import { UFS } from '@/lib/uf'
 
 const AREA03_FRONTEND_URL = process.env.NEXT_PUBLIC_AREA03_FRONTEND_URL ?? ''
 
 export default function ConvitesGovPage() {
   const pronto = useRequireAuth()
   const [cidade, setCidade] = useState('')
+  const [uf, setUf] = useState('')
   const [dias, setDias] = useState('7')
   const [criando, setCriando] = useState(false)
   const [erro, setErro] = useState('')
@@ -54,8 +56,9 @@ export default function ConvitesGovPage() {
     setErro('')
     setCriando(true)
     try {
-      await api.criarConvite({ cidade: cidade.trim(), dias_validade: Number(dias) || 7 })
+      await api.criarConvite({ cidade: cidade.trim(), uf: uf || undefined, dias_validade: Number(dias) || 7 })
       setCidade('')
+      setUf('')
       setDias('7')
       carregar()
     } catch (e) {
@@ -89,6 +92,40 @@ export default function ConvitesGovPage() {
                 />
               </div>
               <div style={{ width: '120px' }}>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    color: 'var(--c-input-label)',
+                    letterSpacing: '0.01em',
+                    marginBottom: '0.375rem',
+                  }}
+                >
+                  UF
+                </label>
+                <select
+                  value={uf}
+                  onChange={(e) => setUf(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.625rem 1rem',
+                    background: 'var(--c-input-bg)',
+                    border: '1px solid var(--c-input-border)',
+                    borderRadius: '0.75rem',
+                    color: 'var(--c-input-text)',
+                    fontSize: '0.9375rem',
+                  }}
+                >
+                  <option value="">--</option>
+                  {UFS.map((u) => (
+                    <option key={u} value={u}>
+                      {u}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div style={{ width: '120px' }}>
                 <Input
                   label="Validade (dias)"
                   type="number"
@@ -111,7 +148,8 @@ export default function ConvitesGovPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                   <div>
                     <p style={{ fontWeight: 700 }}>
-                      {c.cidade}{' '}
+                      {c.cidade}
+                      {c.uf ? `/${c.uf}` : ''}{' '}
                       {c.usado && (
                         <span style={{ fontSize: '0.75rem', color: 'var(--c-text-3)', fontWeight: 400 }}>(já utilizado)</span>
                       )}
