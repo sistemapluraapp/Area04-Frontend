@@ -12,6 +12,7 @@ const LINKS = [
   { href: '/moderacao', label: 'Moderação' },
   { href: '/certificados', label: 'Certificados' },
   { href: '/convites-gov', label: 'Convites Gov' },
+  { href: '/filtros', label: 'Filtros' },
 ]
 
 export function useRequireAuth() {
