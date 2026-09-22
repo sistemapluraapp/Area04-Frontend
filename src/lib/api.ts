@@ -136,6 +136,27 @@ export interface ConviteGov {
   usado_em: string | null
 }
 
+export interface Estatisticas {
+  meses: string[]
+  usuarios_por_mes: number[]
+  empresas_por_mes: number[]
+  gov_por_mes: number[]
+  logins_pessoa_empresa_por_mes: number[]
+  logins_gov_por_mes: number[]
+}
+
+export interface Filtro {
+  id: string
+  tipo: 'recurso_local' | 'necessidade_pessoal'
+  categoria: string
+  codigo: string
+  rotulo: string
+  ordem: number
+  ativo: boolean
+  created_at: string
+  updated_at: string
+}
+
 export interface Notificacao {
   id: string
   tipo: string
@@ -160,6 +181,21 @@ export const api = {
     request<AuthResponse>('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
 
   indicadores: () => request<Indicadores>('/indicadores'),
+
+  estatisticas: () => request<Estatisticas>('/estatisticas'),
+
+  listarFiltros: () => request<{ filtros: Filtro[] }>('/filtros'),
+
+  criarFiltro: (body: { tipo: Filtro['tipo']; categoria: string; codigo: string; rotulo: string; ordem?: number }) =>
+    request<Filtro>('/filtros', { method: 'POST', body: JSON.stringify(body) }),
+
+  atualizarFiltro: (id: string, body: Partial<Pick<Filtro, 'categoria' | 'rotulo' | 'ordem' | 'ativo'>>) =>
+    request<Filtro>(`/filtros/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+
+  reordenarFiltros: (itens: { id: string; ordem: number }[]) =>
+    request<void>('/filtros/reordenar', { method: 'PATCH', body: JSON.stringify({ itens }) }),
+
+  excluirFiltro: (id: string) => request<void>(`/filtros/${id}`, { method: 'DELETE' }),
 
   listarUsuarios: () => request<{ usuarios: Usuario[] }>('/contas/usuarios'),
 
