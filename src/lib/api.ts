@@ -4,6 +4,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? ''
 
 export class ApiError extends Error {}
 
+function montarQuery(params?: Record<string, string | undefined>): string {
+  if (!params) return ''
+  const entradas = Object.entries(params).filter(([, v]) => v !== undefined && v !== '')
+  if (entradas.length === 0) return ''
+  const usp = new URLSearchParams(entradas as [string, string][])
+  return `?${usp.toString()}`
+}
+
 function redirecionarParaLogin() {
   if (
     typeof window !== 'undefined' &&
@@ -88,6 +96,10 @@ export interface Usuario {
   id: string
   cpf: string
   nome: string
+  cidade?: string | null
+  uf?: string | null
+  suspenso?: boolean
+  email?: string
   created_at: string
 }
 
@@ -96,7 +108,10 @@ export interface GovConta {
   nome: string
   orgao: string
   cidade: string
+  uf?: string | null
   nivel_acesso: number
+  suspenso?: boolean
+  email?: string
   created_at: string
 }
 
@@ -105,6 +120,12 @@ export interface Pagina {
   tipo: 'privada' | 'publica'
   nome: string
   descricao: string | null
+  cidade?: string | null
+  uf?: string | null
+  endereco?: string | null
+  suspensa?: boolean
+  latitude?: number | null
+  longitude?: number | null
   created_at: string
 }
 
@@ -115,6 +136,7 @@ export interface AvaliacaoSinalizada {
   nota: number
   comentario: string | null
   resposta: string | null
+  sinalizada?: boolean
   created_at: string
 }
 
@@ -130,6 +152,7 @@ export interface Certificado {
 export interface ConviteGov {
   token: string
   cidade: string
+  uf?: string | null
   criado_em: string
   expira_em: string
   usado: boolean
@@ -143,6 +166,22 @@ export interface Estatisticas {
   gov_por_mes: number[]
   logins_pessoa_empresa_por_mes: number[]
   logins_gov_por_mes: number[]
+}
+
+export interface EstatisticasPorAno {
+  ano: number
+  meses: string[]
+  usuarios_por_mes: number[]
+  empresas_por_mes: number[]
+  gov_por_mes: number[]
+}
+
+export interface LoginsPorDia {
+  ano: number
+  mes: number
+  dias: string[]
+  logins_pessoa_empresa_por_dia: number[]
+  logins_gov_por_dia: number[]
 }
 
 export interface Filtro {
@@ -197,25 +236,50 @@ export const api = {
 
   excluirFiltro: (id: string) => request<void>(`/filtros/${id}`, { method: 'DELETE' }),
 
-  listarUsuarios: () => request<{ usuarios: Usuario[] }>('/contas/usuarios'),
+  listarUsuarios: (filtros?: { nome?: string; uf?: string }) =>
+    request<{ usuarios: Usuario[] }>(`/contas/usuarios${montarQuery(filtros)}`),
 
-  listarGovContas: () => request<{ contas: GovConta[] }>('/contas/gov'),
+  listarGovContas: (filtros?: { nome?: string; uf?: string }) =>
+    request<{ contas: GovConta[] }>(`/contas/gov${montarQuery(filtros)}`),
 
-  listarPaginas: () => request<{ paginas: Pagina[] }>('/contas/paginas'),
+  listarPaginas: (filtros?: { nome?: string; uf?: string }) =>
+    request<{ paginas: Pagina[] }>(`/contas/paginas${montarQuery(filtros)}`),
 
   excluirConta: (id: string) => request<void>(`/contas/${id}`, { method: 'DELETE' }),
 
+  suspenderUsuario: (id: string) =>
+    request<{ id: string; suspenso: boolean }>(`/contas/usuarios/${id}/suspender`, { method: 'PATCH' }),
+
+  suspenderGov: (id: string) =>
+    request<{ id: string; suspenso: boolean }>(`/contas/gov/${id}/suspender`, { method: 'PATCH' }),
+
+  suspenderPagina: (id: string) =>
+    request<{ id: string; suspensa: boolean }>(`/contas/paginas/${id}/suspender`, { method: 'PATCH' }),
+
+  atualizarUfUsuario: (id: string, uf: string) =>
+    request<{ id: string; uf: string }>(`/contas/usuarios/${id}`, { method: 'PATCH', body: JSON.stringify({ uf }) }),
+
+  atualizarUfGov: (id: string, uf: string) =>
+    request<{ id: string; uf: string }>(`/contas/gov/${id}`, { method: 'PATCH', body: JSON.stringify({ uf }) }),
+
   avaliacoesSinalizadas: () => request<{ avaliacoes: AvaliacaoSinalizada[] }>('/avaliacoes/sinalizadas'),
+
+  avaliacoesTodas: () => request<{ avaliacoes: AvaliacaoSinalizada[] }>('/avaliacoes/todas'),
 
   certificadosPendentes: () => request<{ certificados: Certificado[] }>('/certificados/pendentes'),
 
   atualizarCertificado: (id: string, status: 'aprovado' | 'reprovado') =>
     request<Certificado>(`/certificados/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }),
 
-  criarConvite: (body: { cidade: string; dias_validade?: number }) =>
+  criarConvite: (body: { cidade: string; uf?: string; dias_validade?: number }) =>
     request<ConviteGov>('/convites-gov', { method: 'POST', body: JSON.stringify(body) }),
 
   listarConvites: () => request<{ convites: ConviteGov[] }>('/convites-gov'),
+
+  estatisticasPorAno: (ano: number) => request<EstatisticasPorAno>(`/estatisticas/por-ano?ano=${ano}`),
+
+  estatisticasLoginsPorDia: (ano: number, mes: number) =>
+    request<LoginsPorDia>(`/estatisticas/logins-por-dia?ano=${ano}&mes=${mes}`),
 
   listarNotificacoes: (apenasNaoLidas?: boolean) =>
     request<{ notificacoes: Notificacao[] }>(
