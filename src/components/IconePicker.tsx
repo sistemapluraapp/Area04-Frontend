@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { IconSearch, IconX } from '@tabler/icons-react'
 import Icone, { CHAVES_ICONES } from './Icone'
+import Portal from './Portal'
 
 // Seletor de ícone da biblioteca Tabler. Grava a chave em kebab-case
 // (ex.: 'wheelchair'), que as outras áreas renderizam com <Icone nome=... />.
@@ -55,6 +56,7 @@ export default function IconePicker({
       </button>
 
       {aberto && (
+        <Portal>
         <div
           role="dialog"
           aria-modal="true"
@@ -118,6 +120,7 @@ export default function IconePicker({
             </div>
           </div>
         </div>
+        </Portal>
       )}
     </>
   )

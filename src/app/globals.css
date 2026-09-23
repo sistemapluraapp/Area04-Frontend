@@ -256,12 +256,13 @@ button { font-family: inherit; }
 [data-tema] {
   --p-soft: color-mix(in srgb, var(--p-accent) 11%, transparent);
   --p-soft-border: color-mix(in srgb, var(--p-accent) 30%, transparent);
-  --p-bg: color-mix(in srgb, var(--p-accent) 5%, var(--c-bg));
+  /* translúcido: deixa a marca d'água do fundo aparecer */
+  --p-bg: color-mix(in srgb, var(--p-accent) 6%, transparent);
 }
 [data-theme='dark'] [data-tema] {
   --p-soft: color-mix(in srgb, var(--p-accent) 18%, transparent);
   --p-soft-border: color-mix(in srgb, var(--p-accent) 38%, transparent);
-  --p-bg: color-mix(in srgb, var(--p-accent) 10%, var(--c-bg));
+  --p-bg: color-mix(in srgb, var(--p-accent) 10%, transparent);
 }
 
 [data-tema='plura']       { --p-accent: #1a7aff; --p-accent-contrast: #ffffff; --p-accent-text: #0b5fd0; }
