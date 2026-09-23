@@ -50,7 +50,7 @@ function CardComentario({ c, onModerar }: { c: ComentarioModeracao; onModerar: (
           aria-hidden
           style={{
             width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0,
-            background: c.usuario_avatar_url ? `url(${c.usuario_avatar_url}) center/cover` : 'linear-gradient(135deg,#1a7aff,#0062e6)',
+            background: c.usuario_avatar_url ? `url("${c.usuario_avatar_url}") center/cover` : 'linear-gradient(135deg,#1a7aff,#0062e6)',
             color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.875rem',
           }}
         >
