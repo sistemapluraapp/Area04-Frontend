@@ -1,0 +1,29 @@
+name: Deploy Pages (teste)
+
+# Ambiente de teste: publica esta branch como pré-visualização do Cloudflare
+# Pages em https://teste.area04-frontend.pages.dev, apontando para os backends de teste.
+# A produção (branch main do projeto) não é alterada.
+on:
+  push:
+    branches: [claude/clever-knuth-bx0368]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_BACKEND_URL: https://area04-backend-teste.sistemapluraapp.workers.dev
+          NEXT_PUBLIC_AREA03_FRONTEND_URL: https://teste.area03-frontend.pages.dev
+          NEXT_PUBLIC_AREA01_URL: https://teste.area01-frontend.pages.dev
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy out --project-name=area04-frontend --branch=teste --commit-dirty=true
