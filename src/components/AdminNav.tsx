@@ -10,10 +10,14 @@ import ModoToggle from './ModoToggle'
 const LINKS = [
   { href: '/dashboard', label: 'Indicadores' },
   { href: '/contas', label: 'Contas' },
-  { href: '/moderacao', label: 'Moderação' },
+  { href: '/comentarios', label: 'Comentários' },
+  { href: '/denuncias', label: 'Denúncias' },
+  { href: '/moderacao', label: 'Sinalizadas' },
   { href: '/certificados', label: 'Certificados' },
   { href: '/convites-gov', label: 'Convites Gov' },
-  { href: '/filtros', label: 'Filtros' },
+  { href: '/acessibilidade', label: 'Acessibilidade' },
+  { href: '/catalogo', label: 'Catálogo' },
+  { href: '/filtros', label: 'Necessidades' },
 ]
 
 export function useRequireAuth() {

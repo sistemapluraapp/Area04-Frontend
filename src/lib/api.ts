@@ -184,16 +184,78 @@ export interface LoginsPorDia {
   logins_gov_por_dia: number[]
 }
 
+export type Escopo = 'b2b' | 'b2g' | 'ambos'
+
 export interface Filtro {
   id: string
   tipo: 'recurso_local' | 'necessidade_pessoal'
   categoria: string
   codigo: string
   rotulo: string
+  icone: string | null
+  descricao: string | null
+  escopo: Escopo
   ordem: number
   ativo: boolean
   created_at: string
   updated_at: string
+}
+
+export interface GrupoAcessibilidade {
+  codigo: string
+  rotulo: string
+  descricao: string | null
+  icone: string | null
+  ordem: number
+  ativo: boolean
+  total_recursos: number
+}
+
+export type TipoCatalogo = 'categoria' | 'tag' | 'preferencia_turismo' | 'antes_de_ir'
+
+export interface ItemCatalogo {
+  id: string
+  tipo: TipoCatalogo
+  codigo: string
+  rotulo: string
+  icone: string | null
+  escopo: Escopo
+  ordem: number
+  ativo: boolean
+}
+
+export type StatusComentario = 'pendente' | 'aprovado' | 'reprovado'
+
+export interface ComentarioModeracao {
+  id: string
+  pagina_id: string
+  pagina_nome: string
+  usuario_id: string
+  usuario_nome: string | null
+  usuario_avatar_url: string | null
+  nota: number
+  comentario: string | null
+  status: StatusComentario
+  motivo_moderacao: string | null
+  moderado_em: string | null
+  sinalizada: boolean
+  created_at: string
+}
+
+export type StatusDenuncia = 'pendente' | 'resolvida' | 'descartada'
+
+export interface Denuncia {
+  id: string
+  pagina_id: string
+  pagina_nome: string
+  usuario_id: string
+  usuario_nome: string | null
+  motivo: string
+  comentario: string | null
+  status: StatusDenuncia
+  observacao_admin: string | null
+  resolvida_em: string | null
+  created_at: string
 }
 
 export interface Notificacao {
@@ -225,16 +287,67 @@ export const api = {
 
   listarFiltros: () => request<{ filtros: Filtro[] }>('/filtros'),
 
-  criarFiltro: (body: { tipo: Filtro['tipo']; categoria: string; codigo: string; rotulo: string; ordem?: number }) =>
-    request<Filtro>('/filtros', { method: 'POST', body: JSON.stringify(body) }),
+  criarFiltro: (body: {
+    tipo: Filtro['tipo']
+    categoria: string
+    codigo: string
+    rotulo: string
+    ordem?: number
+    icone?: string | null
+    descricao?: string | null
+    escopo?: Escopo
+  }) => request<Filtro>('/filtros', { method: 'POST', body: JSON.stringify(body) }),
 
-  atualizarFiltro: (id: string, body: Partial<Pick<Filtro, 'categoria' | 'rotulo' | 'ordem' | 'ativo'>>) =>
+  atualizarFiltro: (
+    id: string,
+    body: Partial<Pick<Filtro, 'categoria' | 'rotulo' | 'ordem' | 'ativo' | 'icone' | 'descricao' | 'escopo'>>
+  ) =>
     request<Filtro>(`/filtros/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
 
   reordenarFiltros: (itens: { id: string; ordem: number }[]) =>
     request<void>('/filtros/reordenar', { method: 'PATCH', body: JSON.stringify({ itens }) }),
 
   excluirFiltro: (id: string) => request<void>(`/filtros/${id}`, { method: 'DELETE' }),
+
+  listarGrupos: () => request<{ grupos: GrupoAcessibilidade[] }>('/grupos-acessibilidade'),
+
+  criarGrupo: (body: { codigo: string; rotulo: string; descricao?: string | null; icone?: string | null; ordem?: number }) =>
+    request<GrupoAcessibilidade>('/grupos-acessibilidade', { method: 'POST', body: JSON.stringify(body) }),
+
+  atualizarGrupo: (codigo: string, body: Partial<Pick<GrupoAcessibilidade, 'rotulo' | 'descricao' | 'icone' | 'ordem' | 'ativo'>>) =>
+    request<GrupoAcessibilidade>(`/grupos-acessibilidade/${codigo}`, { method: 'PATCH', body: JSON.stringify(body) }),
+
+  excluirGrupo: (codigo: string) => request<void>(`/grupos-acessibilidade/${codigo}`, { method: 'DELETE' }),
+
+  listarCatalogo: (tipo: TipoCatalogo) => request<{ itens: ItemCatalogo[] }>(`/catalogo?tipo=${tipo}`),
+
+  criarItemCatalogo: (body: { tipo: TipoCatalogo; codigo: string; rotulo: string; icone?: string | null; escopo?: Escopo; ordem?: number }) =>
+    request<ItemCatalogo>('/catalogo', { method: 'POST', body: JSON.stringify(body) }),
+
+  atualizarItemCatalogo: (id: string, body: Partial<Pick<ItemCatalogo, 'rotulo' | 'icone' | 'escopo' | 'ordem' | 'ativo'>>) =>
+    request<ItemCatalogo>(`/catalogo/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+
+  reordenarCatalogo: (itens: { id: string; ordem: number }[]) =>
+    request<void>('/catalogo/reordenar', { method: 'PATCH', body: JSON.stringify({ itens }) }),
+
+  excluirItemCatalogo: (id: string) => request<void>(`/catalogo/${id}`, { method: 'DELETE' }),
+
+  listarComentarios: (filtros: { status?: StatusComentario; pessoa?: string; empreendimento?: string }) =>
+    request<{ comentarios: ComentarioModeracao[] }>(`/comentarios${montarQuery(filtros)}`),
+
+  moderarComentario: (id: string, status: StatusComentario, motivo?: string) =>
+    request<Pick<ComentarioModeracao, 'id' | 'status' | 'motivo_moderacao' | 'moderado_em'>>(`/comentarios/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status, motivo }),
+    }),
+
+  listarDenuncias: (status?: StatusDenuncia) => request<{ denuncias: Denuncia[] }>(`/denuncias${montarQuery({ status })}`),
+
+  atualizarDenuncia: (id: string, status: StatusDenuncia, observacao_admin?: string) =>
+    request<Pick<Denuncia, 'id' | 'status' | 'observacao_admin' | 'resolvida_em'>>(`/denuncias/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status, observacao_admin }),
+    }),
 
   listarUsuarios: (filtros?: { nome?: string; uf?: string }) =>
     request<{ usuarios: Usuario[] }>(`/contas/usuarios${montarQuery(filtros)}`),

@@ -12,10 +12,9 @@ import { api, type Filtro } from '@/lib/api'
 
 type Tipo = Filtro['tipo']
 
-const ABAS: { tipo: Tipo; label: string }[] = [
-  { tipo: 'recurso_local', label: 'Recursos do local' },
-  { tipo: 'necessidade_pessoal', label: 'Necessidades pessoais' },
-]
+// Os recursos do local agora são gerenciados em /acessibilidade (com grupos e
+// ícones); esta tela fica com as necessidades pessoais do perfil do usuário.
+const ABAS: { tipo: Tipo; label: string }[] = [{ tipo: 'necessidade_pessoal', label: 'Necessidades pessoais' }]
 
 function slugify(texto: string) {
   return texto
@@ -430,7 +429,7 @@ export default function FiltrosPage() {
   const [filtros, setFiltros] = useState<Filtro[]>([])
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(true)
-  const [aba, setAba] = useState<Tipo>('recurso_local')
+  const [aba, setAba] = useState<Tipo>('necessidade_pessoal')
 
   useEffect(() => {
     if (!pronto) return
