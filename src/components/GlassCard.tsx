@@ -39,7 +39,7 @@ export default function GlassCard({
       onMouseEnter={(e) => {
         if (hoverable || onClick) {
           e.currentTarget.style.transform = 'translateY(-4px) scale(1.01)'
-          e.currentTarget.style.boxShadow = '0 24px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.20)'
+          e.currentTarget.style.boxShadow = 'var(--c-shadow-hover)'
         }
       }}
       onMouseLeave={(e) => {

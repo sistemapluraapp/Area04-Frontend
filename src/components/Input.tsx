@@ -17,7 +17,7 @@ export default function Input({ label, helperText, error, leadingIcon, trailingI
   const boxShadow = error
     ? '0 0 0 3px var(--c-input-error-ring)'
     : focused
-      ? '0 0 0 3px var(--c-input-focus-ring), 0 4px 16px rgba(0,0,0,0.14)'
+      ? '0 0 0 3px var(--c-input-focus-ring), var(--c-shadow-sm)'
       : 'none'
 
   return (

@@ -72,10 +72,10 @@ export default function ModeracaoPage() {
                 marginBottom: '1.5rem',
                 padding: '0.75rem 1rem',
                 borderRadius: '0.75rem',
-                background: 'rgba(239,68,68,0.12)',
-                border: '1px solid rgba(239,68,68,0.3)',
+                background: 'var(--c-danger-soft)',
+                border: '1px solid var(--c-danger-border)',
                 fontSize: '0.875rem',
-                color: '#f87171',
+                color: 'var(--c-danger-text)',
               }}
             >
               {erro}

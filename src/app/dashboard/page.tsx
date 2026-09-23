@@ -29,10 +29,10 @@ const EmpreendimentosMap = dynamic(() => import('@/components/EmpreendimentosMap
 
 const CHART_BLUE = '#3d94ff'
 const CHART_AMBER = '#f0b429'
-const CHART_GRID = 'rgba(255,255,255,0.08)'
-const CHART_TICK = 'rgba(255,255,255,0.45)'
-const CHART_TOOLTIP_BG = 'rgba(10,12,24,0.92)'
-const CHART_TOOLTIP_BORDER = 'rgba(255,255,255,0.14)'
+const CHART_GRID = 'var(--c-chart-grid)'
+const CHART_TICK = 'var(--c-chart-tick)'
+const CHART_TOOLTIP_BG = 'var(--c-chart-tooltip-bg)'
+const CHART_TOOLTIP_BORDER = 'var(--c-chart-tooltip-border)'
 
 const MESES_PT = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
 
@@ -66,7 +66,7 @@ function tooltipStyle() {
       boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
     },
     labelStyle: { color: 'var(--c-text-2)', marginBottom: '0.25rem' },
-    cursor: { fill: 'rgba(255,255,255,0.05)' },
+    cursor: { fill: 'var(--c-chart-cursor)' },
   }
 }
 
@@ -125,10 +125,10 @@ function ErroBanner({ mensagem }: { mensagem: string }) {
         marginBottom: '1.5rem',
         padding: '0.75rem 1rem',
         borderRadius: '0.75rem',
-        background: 'rgba(239,68,68,0.12)',
-        border: '1px solid rgba(239,68,68,0.3)',
+        background: 'var(--c-danger-soft)',
+        border: '1px solid var(--c-danger-border)',
         fontSize: '0.875rem',
-        color: '#f87171',
+        color: 'var(--c-danger-text)',
       }}
     >
       {mensagem}

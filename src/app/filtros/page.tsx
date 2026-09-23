@@ -43,10 +43,10 @@ function ErroBanner({ mensagem }: { mensagem: string }) {
         marginBottom: '1.5rem',
         padding: '0.75rem 1rem',
         borderRadius: '0.75rem',
-        background: 'rgba(239,68,68,0.12)',
-        border: '1px solid rgba(239,68,68,0.3)',
+        background: 'var(--c-danger-soft)',
+        border: '1px solid var(--c-danger-border)',
         fontSize: '0.875rem',
-        color: '#f87171',
+        color: 'var(--c-danger-text)',
       }}
     >
       {mensagem}
@@ -67,7 +67,7 @@ function Switch({ ativo, onChange }: { ativo: boolean; onChange: () => void }) {
         border: 'none',
         cursor: 'pointer',
         position: 'relative',
-        background: ativo ? 'linear-gradient(135deg, #1a7aff 0%, #0062e6 100%)' : 'rgba(255,255,255,0.12)',
+        background: ativo ? 'linear-gradient(135deg, #1a7aff 0%, #0062e6 100%)' : 'var(--c-text-4)',
         transition: 'background 150ms ease',
         flexShrink: 0,
       }}
@@ -124,7 +124,7 @@ function FiltroRow({
         gap: '0.75rem',
         padding: '0.625rem 0.875rem',
         borderRadius: '0.625rem',
-        background: filtro.ativo ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.015)',
+        background: filtro.ativo ? 'var(--c-glass-bg-sm)' : 'transparent',
         opacity: filtro.ativo ? 1 : 0.5,
       }}
     >
@@ -297,7 +297,7 @@ function FormNovoFiltro({
       <Button size="sm" variant="ghost" onClick={onCancelar} disabled={salvando}>
         Cancelar
       </Button>
-      {erro && <p style={{ width: '100%', color: '#f87171', fontSize: '0.8125rem' }}>{erro}</p>}
+      {erro && <p style={{ width: '100%', color: 'var(--c-danger-text)', fontSize: '0.8125rem' }}>{erro}</p>}
     </div>
   )
 }

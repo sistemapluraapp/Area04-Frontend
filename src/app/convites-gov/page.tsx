@@ -138,7 +138,7 @@ export default function ConvitesGovPage() {
                 Gerar convite
               </Button>
             </form>
-            {erro && <p style={{ color: '#f87171', fontSize: '0.875rem', marginTop: '1rem' }}>{erro}</p>}
+            {erro && <p style={{ color: 'var(--c-danger-text)', fontSize: '0.875rem', marginTop: '1rem' }}>{erro}</p>}
           </GlassCard>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>

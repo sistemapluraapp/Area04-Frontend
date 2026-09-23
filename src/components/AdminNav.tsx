@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { limparSessao, obterUsuarioSalvo, estaLogado } from '@/lib/auth'
 import { LOGO_DATA_URI } from '@/lib/logo'
 import NotificationBell from './NotificationBell'
+import ModoToggle from './ModoToggle'
 
 const LINKS = [
   { href: '/dashboard', label: 'Indicadores' },
@@ -73,6 +74,7 @@ export default function AdminNav({ atual }: { atual: string }) {
         </nav>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <ModoToggle />
         <NotificationBell />
         {usuario && (
           <span style={{ fontSize: '0.8125rem', color: 'var(--c-text-3)' }}>{usuario.nome ?? usuario.email}</span>
