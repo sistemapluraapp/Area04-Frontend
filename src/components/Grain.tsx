@@ -1,6 +1,6 @@
 export default function Grain() {
   return (
-    <div
+    <div className="fundo-decorativo"
       aria-hidden
       style={{
         position: 'fixed',

@@ -433,3 +433,44 @@ html[data-movimento='reduzido'] *, html[data-movimento='reduzido'] *::before, ht
 }
 
 @media (max-width: 640px) { .rotulo-acessibilidade { display: none; } }
+
+/* ---------------------------------------------------------------------------
+   Alto contraste (painel de Acessibilidade): vale sobre o modo claro ou
+   escuro e sobre a cor de cada empresa. Fundo preto, texto branco, destaques
+   em amarelo e bordas brancas grossas.
+   --------------------------------------------------------------------------- */
+:root[data-contraste='alto'] {
+  color-scheme: dark;
+  --c-bg: #000000;
+  --c-text-1: #ffffff; --c-text-2: #ffffff; --c-text-3: #f2f2f2; --c-text-4: #bdbdbd;
+  --c-text-blue: #ffe000; --c-text-mono: #ffffff;
+  --c-accent-text: #ffe000; --c-accent-soft: rgba(255, 224, 0, 0.16); --c-accent-soft-border: #ffe000;
+  --c-border: 2px solid #ffffff; --c-border-sm: 2px solid #ffffff; --c-border-lg: 2px solid #ffffff; --c-border-blue: 2px solid #ffe000;
+  --c-divider: #ffffff;
+  --c-glass-bg: #000000; --c-glass-bg-sm: #000000; --c-glass-bg-lg: #000000; --c-glass-bg-blue: #000000;
+  --c-modal-bg: #000000; --c-overlay: rgba(0, 0, 0, 0.9);
+  --c-topbar-bg: #000000; --c-sidebar-bg: #000000;
+  --c-input-bg: #000000; --c-input-border: #ffffff; --c-input-text: #ffffff; --c-input-label: #ffffff; --c-input-helper: #f2f2f2;
+  --c-input-icon: #ffffff; --c-input-icon-focus: #ffe000; --c-input-focus-border: #ffe000; --c-input-focus-ring: rgba(255, 224, 0, 0.45);
+  --c-placeholder: #cfcfcf;
+  --c-input-error-border: #ff7070; --c-input-error-label: #ff7070; --c-input-error-text: #ff7070; --c-input-error-ring: rgba(255, 112, 112, 0.4);
+  --c-btn-secondary-bg: #000000; --c-btn-secondary-border: #ffffff; --c-btn-secondary-text: #ffffff;
+  --c-btn-ghost-border: #ffffff; --c-btn-ghost-text: #ffffff;
+  --c-checkbox-bg: #000000; --c-checkbox-border: #ffffff; --c-checkbox-text: #ffffff;
+  --c-danger-text: #ff7070; --c-danger-soft: transparent; --c-danger-border: #ff7070;
+  --c-success-text: #5dff8a; --c-success-soft: transparent;
+  --c-warning-text: #ffe000; --c-warning-soft: transparent;
+  --c-caution-text: #ffe000; --c-caution-soft: transparent; --c-orange-text: #ffb366; --c-orange-soft: transparent;
+  --c-chart-grid: #ffffff; --c-chart-tick: #ffffff; --c-chart-cursor: #ffe000; --c-chart-tooltip-bg: #000000; --c-chart-tooltip-border: #ffffff;
+  --c-shadow-sm: none; --c-shadow-md: none; --c-shadow-lg: none; --c-shadow-hover: none; --c-shadow-glow: none;
+  --c-grain-opacity: 0; --c-dot-grid: transparent;
+}
+:root[data-contraste='alto'] body { background: #000000; color: #ffffff; }
+:root[data-contraste='alto'] [data-tema] {
+  --p-accent: #ffe000; --p-accent-contrast: #000000; --p-accent-text: #ffe000;
+  --p-soft: transparent; --p-soft-border: #ffe000; --p-bg: #000000;
+}
+:root[data-contraste='alto'] .fundo-decorativo { display: none !important; }
+:root[data-contraste='alto'] *, :root[data-contraste='alto'] *::before, :root[data-contraste='alto'] *::after { backdrop-filter: none !important; text-shadow: none !important; }
+:root[data-contraste='alto'] :focus-visible { outline-color: #ffe000 !important; }
+:root[data-contraste='alto'] .pular-conteudo { background: #ffe000; color: #000000; }

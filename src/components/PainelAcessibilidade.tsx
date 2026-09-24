@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { IconAccessible, IconHandLoveYou, IconPlayerStopFilled, IconRefresh, IconTextSize, IconVolume, IconWalk, IconX } from '@tabler/icons-react'
+import { IconAccessible, IconContrast, IconHandLoveYou, IconPlayerStopFilled, IconRefresh, IconTextSize, IconVolume, IconWalk, IconX } from '@tabler/icons-react'
 import {
   EVENTO_ACESSIBILIDADE,
   PADRAO,
@@ -207,6 +207,15 @@ export default function PainelAcessibilidade({ compacto = false }: { compacto?: 
                 </div>
               </div>
             )}
+
+            <Interruptor
+              id="pref-contraste"
+              ligado={prefs.altoContraste}
+              onChange={(v) => mudar({ altoContraste: v })}
+              titulo="Alto contraste"
+              descricao="Fundo preto, texto branco e destaques em amarelo, com bordas mais fortes. Para baixa visão."
+              icone={<IconContrast size={22} aria-hidden />}
+            />
 
             <Interruptor
               id="pref-movimento"

@@ -12,7 +12,7 @@ const ladrilho = `data:image/svg+xml;utf8,${encodeURIComponent(
 
 export default function MarcaDagua() {
   return (
-    <div aria-hidden style={{ position: 'fixed', inset: 0, zIndex: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+    <div aria-hidden className="fundo-decorativo" style={{ position: 'fixed', inset: 0, zIndex: 0, overflow: 'hidden', pointerEvents: 'none' }}>
       <div
         style={{
           position: 'absolute',

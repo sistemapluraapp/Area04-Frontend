@@ -7,12 +7,13 @@ export interface PreferenciasAcessibilidade {
   libras: boolean
   texto: TamanhoTexto
   reduzirMovimento: boolean
+  altoContraste: boolean
 }
 
 const CHAVE = 'plura_acessibilidade'
 export const EVENTO_ACESSIBILIDADE = 'plura-acessibilidade'
 
-export const PADRAO: PreferenciasAcessibilidade = { libras: false, texto: 'normal', reduzirMovimento: false }
+export const PADRAO: PreferenciasAcessibilidade = { libras: false, texto: 'normal', reduzirMovimento: false, altoContraste: false }
 
 export function obterPreferencias(): PreferenciasAcessibilidade {
   try {
@@ -21,6 +22,7 @@ export function obterPreferencias(): PreferenciasAcessibilidade {
       libras: salvo.libras === true,
       texto: salvo.texto === 'grande' || salvo.texto === 'maior' ? salvo.texto : 'normal',
       reduzirMovimento: salvo.reduzirMovimento === true,
+      altoContraste: salvo.altoContraste === true,
     }
   } catch {
     return { ...PADRAO }
@@ -34,6 +36,8 @@ function aplicarNoDocumento(p: PreferenciasAcessibilidade) {
   else raiz.removeAttribute('data-movimento')
   if (p.libras) raiz.setAttribute('data-libras', 'on')
   else raiz.removeAttribute('data-libras')
+  if (p.altoContraste) raiz.setAttribute('data-contraste', 'alto')
+  else raiz.removeAttribute('data-contraste')
 }
 
 export function salvarPreferencias(mudancas: Partial<PreferenciasAcessibilidade>): PreferenciasAcessibilidade {
@@ -50,4 +54,4 @@ export function salvarPreferencias(mudancas: Partial<PreferenciasAcessibilidade>
 
 // Executado no <head>, antes da página aparecer, para o texto já nascer no
 // tamanho escolhido (sem "pular" depois de carregar).
-export const SCRIPT_ACESSIBILIDADE_INICIAL = `try{var p=JSON.parse(localStorage.getItem('${CHAVE}')||'{}'),r=document.documentElement;if(p.texto==='grande'||p.texto==='maior')r.setAttribute('data-texto',p.texto);if(p.reduzirMovimento)r.setAttribute('data-movimento','reduzido');if(p.libras)r.setAttribute('data-libras','on')}catch(e){}`
+export const SCRIPT_ACESSIBILIDADE_INICIAL = `try{var p=JSON.parse(localStorage.getItem('${CHAVE}')||'{}'),r=document.documentElement;if(p.texto==='grande'||p.texto==='maior')r.setAttribute('data-texto',p.texto);if(p.reduzirMovimento)r.setAttribute('data-movimento','reduzido');if(p.libras)r.setAttribute('data-libras','on');if(p.altoContraste)r.setAttribute('data-contraste','alto')}catch(e){}`
