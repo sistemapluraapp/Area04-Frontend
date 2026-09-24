@@ -258,6 +258,31 @@ export interface Denuncia {
   created_at: string
 }
 
+export type FaseConsumo = 'tranquilo' | 'prepare-se' | 'planeje' | 'critico'
+
+export interface RecursoInfraestrutura {
+  recurso: string
+  rotulo: string
+  limite: number
+  unidade: 'bytes' | 'usuarios' | 'requisicoes'
+  periodo: 'total' | 'mes' | 'dia'
+  uso: number | null
+  percentual: number | null
+  fase: FaseConsumo | null
+  erro?: string
+  aviso?: string
+  detalhes?: { nome: string; uso: number | null; erro?: string }[]
+  previsao: { texto: string; percentual_fim_periodo?: number; dias_ate_teto?: number } | null
+  historico: { dia: string; uso: number }[]
+}
+
+export interface ConsumoInfraestrutura {
+  atualizado_em: string
+  painel_supabase: string
+  recursos: RecursoInfraestrutura[]
+  maiores_tabelas: { nome: string; bytes: number; projeto: string }[]
+}
+
 export interface Notificacao {
   id: string
   tipo: string
@@ -272,6 +297,11 @@ export interface Notificacao {
 }
 
 export const api = {
+  consumoInfraestrutura: () => request<ConsumoInfraestrutura>('/infraestrutura'),
+
+  atualizarLimiteInfraestrutura: (recurso: string, limite: number) =>
+    request<{ recurso: string; limite: number }>(`/infraestrutura/limites/${recurso}`, { method: 'PATCH', body: JSON.stringify({ limite }) }),
+
   signup: (body: { codigo: string; nome: string; email: string; password: string }) =>
     request<AuthResponse | { message: string; pending_email_confirmation: true }>('/auth/signup', {
       method: 'POST',

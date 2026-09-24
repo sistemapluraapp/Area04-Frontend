@@ -18,6 +18,7 @@ const LINKS = [
   { href: '/acessibilidade', label: 'Acessibilidade' },
   { href: '/catalogo', label: 'Catálogo' },
   { href: '/filtros', label: 'Necessidades' },
+  { href: '/infraestrutura', label: 'Consumo de recursos em infraestrutura' },
 ]
 
 export function useRequireAuth() {
