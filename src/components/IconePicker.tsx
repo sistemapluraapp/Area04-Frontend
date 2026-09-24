@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useFocoPreso } from '@/lib/useFocoPreso'
 import { IconSearch, IconX } from '@tabler/icons-react'
 import Icone, { CHAVES_ICONES } from './Icone'
 import Portal from './Portal'
@@ -18,6 +19,8 @@ export default function IconePicker({
 }) {
   const [aberto, setAberto] = useState(false)
   const [busca, setBusca] = useState('')
+  const refFoco = useRef<HTMLDivElement>(null)
+  useFocoPreso(refFoco, aberto)
 
   const chaves = useMemo(() => {
     const t = busca.trim().toLowerCase()
@@ -58,6 +61,7 @@ export default function IconePicker({
       {aberto && (
         <Portal>
         <div
+          ref={refFoco}
           role="dialog"
           aria-modal="true"
           aria-label={rotulo}
@@ -71,7 +75,7 @@ export default function IconePicker({
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem 1.25rem', borderBottom: '1px solid var(--c-divider)' }}>
               <div style={{ position: 'relative', flex: 1 }}>
                 <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-text-3)', display: 'flex' }}>
-                  <IconSearch size={16} />
+                  <IconSearch size={16} aria-hidden />
                 </span>
                 <input
                   autoFocus
@@ -82,7 +86,7 @@ export default function IconePicker({
                 />
               </div>
               <button type="button" onClick={() => setAberto(false)} aria-label="Fechar" style={{ background: 'none', border: 'none', color: 'var(--c-text-2)', cursor: 'pointer', display: 'flex' }}>
-                <IconX size={20} />
+                <IconX size={20} aria-hidden />
               </button>
             </div>
             <div style={{ overflowY: 'auto', padding: '1rem 1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(84px, 1fr))', gap: '0.5rem' }}>

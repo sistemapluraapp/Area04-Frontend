@@ -40,7 +40,7 @@ function CardDenuncia({ d, onAtualizar }: { d: Denuncia; onAtualizar: (status: S
   return (
     <GlassCard style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--c-danger-text)' }}>
-        <IconFlag size={18} />
+        <IconFlag size={18} aria-hidden />
         <span style={{ fontWeight: 700 }}>{MOTIVO_LABEL[d.motivo] ?? d.motivo}</span>
       </div>
       <p style={{ fontSize: '0.875rem', color: 'var(--c-text-2)' }}>
@@ -54,12 +54,12 @@ function CardDenuncia({ d, onAtualizar }: { d: Denuncia; onAtualizar: (status: S
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
         {d.status !== 'resolvida' && (
           <button type="button" disabled={enviando} onClick={() => atualizar('resolvida')} style={{ ...campoStyle, display: 'inline-flex', alignItems: 'center', gap: '0.375rem', background: 'var(--c-success-soft)', border: '1px solid var(--c-success-text)', color: 'var(--c-success-text)', fontWeight: 700, cursor: 'pointer' }}>
-            <IconCheck size={16} /> Marcar como resolvida
+            <IconCheck size={16} aria-hidden /> Marcar como resolvida
           </button>
         )}
         {d.status !== 'descartada' && (
           <button type="button" disabled={enviando} onClick={() => atualizar('descartada')} style={{ ...campoStyle, display: 'inline-flex', alignItems: 'center', gap: '0.375rem', cursor: 'pointer', fontWeight: 600 }}>
-            <IconX size={16} /> Descartar
+            <IconX size={16} aria-hidden /> Descartar
           </button>
         )}
         {d.status !== 'pendente' && (

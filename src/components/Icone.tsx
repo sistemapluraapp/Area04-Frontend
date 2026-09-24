@@ -273,17 +273,29 @@ export const ICONES: Record<string, TablerIcon> = {
 
 export const CHAVES_ICONES = Object.keys(ICONES)
 
+// Ícone decorativo por padrão (leitores de tela ignoram, porque o texto ao
+// lado já diz o que é). Passe `rotulo` quando o ícone aparecer sozinho e
+// precisar ser lido — ex.: rotulo="Rampa de acesso".
 export default function Icone({
   nome,
   size = 20,
   stroke = 1.75,
   color,
+  rotulo,
 }: {
   nome: string | null | undefined
   size?: number
   stroke?: number
   color?: string
+  rotulo?: string
 }) {
   const Componente = (nome && ICONES[nome]) || IconCircle
+  if (rotulo) {
+    return (
+      <span role="img" aria-label={rotulo} style={{ display: 'inline-flex' }}>
+        <Componente size={size} stroke={stroke} color={color} aria-hidden />
+      </span>
+    )
+  }
   return <Componente size={size} stroke={stroke} color={color} aria-hidden />
 }

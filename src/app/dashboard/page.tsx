@@ -177,7 +177,7 @@ export default function DashboardPage() {
       <Grain />
       <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <AdminNav atual="/dashboard" />
-        <main style={{ flex: 1, maxWidth: '1080px', margin: '0 auto', padding: '0 1.5rem 3rem', width: '100%' }}>
+        <main id="conteudo" tabIndex={-1} style={{ flex: 1, maxWidth: '1080px', margin: '0 auto', padding: '0 1.5rem 3rem', width: '100%' }}>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>Indicadores</h1>
 
           {erro && <ErroBanner mensagem={erro} />}

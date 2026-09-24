@@ -23,6 +23,7 @@ import { limparSessao, obterUsuarioSalvo, estaLogado } from '@/lib/auth'
 import { LOGO_DATA_URI } from '@/lib/logo'
 import NotificationBell from './NotificationBell'
 import ModoToggle from './ModoToggle'
+import PainelAcessibilidade from './PainelAcessibilidade'
 
 type Link = { href: string; label: string; Icone: Icon }
 
@@ -117,7 +118,7 @@ export default function AdminNav({ atual }: { atual: string }) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.25rem 1rem' }}>
           <Logo />
           <button type="button" className="admin-menu-btn" onClick={() => setMenuAberto(false)} aria-label="Fechar menu">
-            <IconX size={20} />
+            <IconX size={20} aria-hidden />
           </button>
         </div>
 
@@ -163,7 +164,7 @@ export default function AdminNav({ atual }: { atual: string }) {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
           <button type="button" className="admin-menu-btn" onClick={() => setMenuAberto(true)} aria-label="Abrir menu" aria-expanded={menuAberto} aria-controls="admin-menu">
-            <IconMenu2 size={20} />
+            <IconMenu2 size={20} aria-hidden />
           </button>
           <span className="admin-logo-topo">
             <Logo />
@@ -171,6 +172,7 @@ export default function AdminNav({ atual }: { atual: string }) {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+          <PainelAcessibilidade />
           <ModoToggle />
           <NotificationBell />
           {usuario && (

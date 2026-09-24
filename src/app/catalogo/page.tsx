@@ -140,7 +140,7 @@ export default function CatalogoPage() {
             disabled={salvando || !novoRotulo.trim()}
             style={{ ...campoStyle, display: 'inline-flex', alignItems: 'center', gap: '0.375rem', background: 'linear-gradient(135deg,#1a7aff,#0062e6)', color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer', opacity: salvando || !novoRotulo.trim() ? 0.6 : 1 }}
           >
-            <IconPlus size={16} /> Adicionar
+            <IconPlus size={16} aria-hidden /> Adicionar
           </button>
         </form>
       </GlassCard>

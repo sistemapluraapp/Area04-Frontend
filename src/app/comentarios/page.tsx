@@ -69,7 +69,7 @@ function CardComentario({ c, onModerar }: { c: ComentarioModeracao; onModerar: (
 
       <div style={{ display: 'flex', gap: '0.125rem', color: '#f59e0b' }} aria-label={`Nota ${c.nota} de 5`}>
         {Array.from({ length: 5 }).map((_, i) => (
-          <IconStarFilled key={i} size={16} style={{ opacity: i < c.nota ? 1 : 0.2 }} />
+          <IconStarFilled key={i} size={16} style={{ opacity: i < c.nota ? 1 : 0.2 }} aria-hidden />
         ))}
       </div>
 
@@ -93,12 +93,12 @@ function CardComentario({ c, onModerar }: { c: ComentarioModeracao; onModerar: (
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {c.status !== 'aprovado' && (
             <button type="button" disabled={enviando} onClick={() => moderar('aprovado')} style={{ ...campoStyle, display: 'inline-flex', alignItems: 'center', gap: '0.375rem', background: 'var(--c-success-soft)', border: '1px solid var(--c-success-text)', color: 'var(--c-success-text)', fontWeight: 700, cursor: 'pointer' }}>
-              <IconCheck size={16} /> Aprovar
+              <IconCheck size={16} aria-hidden /> Aprovar
             </button>
           )}
           {c.status !== 'reprovado' && (
             <button type="button" disabled={enviando} onClick={() => setReprovando(true)} style={{ ...campoStyle, display: 'inline-flex', alignItems: 'center', gap: '0.375rem', background: 'var(--c-danger-soft)', border: '1px solid var(--c-danger-border)', color: 'var(--c-danger-text)', fontWeight: 700, cursor: 'pointer' }}>
-              <IconX size={16} /> Reprovar
+              <IconX size={16} aria-hidden /> Reprovar
             </button>
           )}
         </div>
@@ -162,7 +162,7 @@ export default function ComentariosPage() {
         ].map((f) => (
           <div key={f.placeholder} style={{ position: 'relative', flex: '1 1 240px' }}>
             <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-text-3)', display: 'flex' }}>
-              <IconSearch size={16} />
+              <IconSearch size={16} aria-hidden />
             </span>
             <input value={f.valor} onChange={(e) => f.set(e.target.value)} placeholder={f.placeholder} aria-label={f.placeholder} style={{ ...campoStyle, width: '100%', paddingLeft: '2.25rem' }} />
           </div>

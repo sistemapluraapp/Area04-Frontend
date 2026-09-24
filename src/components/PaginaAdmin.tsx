@@ -74,7 +74,7 @@ export default function PaginaAdmin({
       <Grain />
       <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <AdminNav atual={atual} />
-        <main style={{ flex: 1, maxWidth: `${largura}px`, margin: '0 auto', padding: '0 1.5rem 3rem', width: '100%' }}>
+        <main id="conteudo" tabIndex={-1} style={{ flex: 1, maxWidth: `${largura}px`, margin: '0 auto', padding: '0 1.5rem 3rem', width: '100%' }}>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: descricao ? '0.375rem' : '1.5rem' }}>{titulo}</h1>
           {descricao && <p style={{ color: 'var(--c-text-2)', fontSize: '0.9375rem', marginBottom: '1.5rem', maxWidth: '680px', lineHeight: 1.55 }}>{descricao}</p>}
           {children}

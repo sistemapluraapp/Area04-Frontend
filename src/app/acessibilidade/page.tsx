@@ -57,7 +57,7 @@ function NovoRecurso({ grupo, ordem, onCriado }: { grupo: string; ordem: number;
         ))}
       </select>
       <button type="submit" disabled={salvando || !rotulo.trim()} style={{ ...botaoPrimario, opacity: salvando || !rotulo.trim() ? 0.6 : 1 }}>
-        <IconPlus size={16} /> Adicionar
+        <IconPlus size={16} aria-hidden /> Adicionar
       </button>
       {erro && <p style={{ width: '100%', color: 'var(--c-danger-text)', fontSize: '0.8125rem' }}>{erro}</p>}
     </form>
@@ -219,7 +219,7 @@ export default function AcessibilidadePage() {
           <IconePicker valor={novoGrupoIcone} onChange={setNovoGrupoIcone} rotulo="Ícone do grupo" />
           <input value={novoGrupo} onChange={(e) => setNovoGrupo(e.target.value)} placeholder="Novo grupo (ex.: Acessibilidade auditiva)" aria-label="Nome do novo grupo" style={{ ...campoStyle, flex: '1 1 260px' }} />
           <button type="submit" disabled={!novoGrupo.trim()} style={{ ...botaoPrimario, opacity: novoGrupo.trim() ? 1 : 0.6 }}>
-            <IconPlus size={16} /> Criar grupo
+            <IconPlus size={16} aria-hidden /> Criar grupo
           </button>
         </form>
       </GlassCard>
@@ -248,7 +248,7 @@ export default function AcessibilidadePage() {
                   aria-label="Excluir grupo"
                   style={{ background: 'none', border: '1px solid var(--c-divider)', borderRadius: '0.5rem', padding: '0.3rem', display: 'inline-flex', cursor: 'pointer', color: 'var(--c-danger-text)' }}
                 >
-                  <IconTrash size={16} />
+                  <IconTrash size={16} aria-hidden />
                 </button>
               </div>
               <input

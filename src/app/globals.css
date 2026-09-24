@@ -12,7 +12,7 @@
 
   --c-text-1: #111827;
   --c-text-2: rgba(17, 24, 39, 0.68);
-  --c-text-3: rgba(17, 24, 39, 0.50);
+  --c-text-3: rgba(17, 24, 39, 0.62);
   --c-text-4: rgba(17, 24, 39, 0.24);
   --c-text-mono: rgba(17, 24, 39, 0.50);
   --c-text-blue: #0b5fd0;
@@ -106,8 +106,8 @@
   --blue-700: #004bbf;
 
   --c-text-1: #ffffff;
-  --c-text-2: rgba(255, 255, 255, 0.50);
-  --c-text-3: rgba(255, 255, 255, 0.28);
+  --c-text-2: rgba(255, 255, 255, 0.72);
+  --c-text-3: rgba(255, 255, 255, 0.56);
   --c-text-4: rgba(255, 255, 255, 0.14);
   --c-text-mono: rgba(255, 255, 255, 0.32);
   --c-text-blue: rgba(26, 122, 255, 0.68);
@@ -190,7 +190,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+html { font-size: 100%; -webkit-font-smoothing: antialiased; }
 
 body {
   font-family: var(--font-sans);
@@ -383,3 +383,53 @@ button { font-family: inherit; }
 @media (max-width: 560px) {
   .admin-nome-usuario { display: none; }
 }
+
+/* ---------------------------------------------------------------------------
+   Acessibilidade
+   --------------------------------------------------------------------------- */
+/* Tamanho do texto escolhido no painel (a fonte base também respeita a
+   configuração de tamanho de letra do navegador/celular). */
+html[data-texto='grande'] { font-size: 112.5%; }
+html[data-texto='maior'] { font-size: 125%; }
+
+/* "Pular para o conteúdo": invisível até receber o foco do teclado. */
+.pular-conteudo {
+  position: fixed;
+  left: 0.75rem;
+  top: -120px;
+  z-index: 20000;
+  padding: 0.75rem 1.125rem;
+  border-radius: 0.75rem;
+  background: #1a7aff;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(26, 122, 255, 0.35);
+}
+.pular-conteudo:focus { top: 0.75rem; }
+
+/* Foco visível só para quem navega pelo teclado (não aparece no toque/clique). */
+:focus-visible { outline: 3px solid #1a7aff !important; outline-offset: 2px !important; }
+main:focus, main:focus-visible, #conteudo:focus, #conteudo:focus-visible, [role='dialog']:focus, [role='dialog']:focus-visible { outline: none !important; }
+
+/* Texto só para leitores de tela */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+
+/* VLibras: fica escondido quando a Libras está desligada no painel. */
+html:not([data-libras='on']) [vw] { display: none !important; }
+
+/* Reduzir animações (preferência do sistema ou do painel) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+html[data-movimento='reduzido'] *, html[data-movimento='reduzido'] *::before, html[data-movimento='reduzido'] *::after {
+  animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+}
+
+@media (max-width: 640px) { .rotulo-acessibilidade { display: none; } }

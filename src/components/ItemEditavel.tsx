@@ -151,13 +151,13 @@ export default function ItemEditavel({
       <Switch ativo={ativo} onChange={() => onAtualizar({ ativo: !ativo })} />
       <div style={{ display: 'flex', gap: '0.25rem' }}>
         <BotaoIcone onClick={onSubir} titulo="Subir" desativado={primeiro}>
-          <IconArrowUp size={16} />
+          <IconArrowUp size={16} aria-hidden />
         </BotaoIcone>
         <BotaoIcone onClick={onDescer} titulo="Descer" desativado={ultimo}>
-          <IconArrowDown size={16} />
+          <IconArrowDown size={16} aria-hidden />
         </BotaoIcone>
         <BotaoIcone onClick={onExcluir} titulo="Excluir" perigo>
-          <IconTrash size={16} />
+          <IconTrash size={16} aria-hidden />
         </BotaoIcone>
       </div>
     </div>

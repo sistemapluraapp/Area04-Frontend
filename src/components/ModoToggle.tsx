@@ -36,7 +36,7 @@ export default function ModoToggle() {
         flexShrink: 0,
       }}
     >
-      {modo === 'escuro' ? <IconSun size={18} stroke={1.8} /> : <IconMoon size={18} stroke={1.8} />}
+      {modo === 'escuro' ? <IconSun size={18} stroke={1.8} aria-hidden /> : <IconMoon size={18} stroke={1.8} aria-hidden />}
     </button>
   )
 }
