@@ -43,6 +43,8 @@ export default function Input({ label, helperText, error, leadingIcon, trailingI
               left: '0.875rem',
               color: focused ? 'var(--c-input-icon-focus)' : 'var(--c-input-icon)',
               display: 'flex',
+              zIndex: 1,
+              pointerEvents: 'none',
             }}
           >
             {leadingIcon}
