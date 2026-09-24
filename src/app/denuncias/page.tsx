@@ -22,7 +22,7 @@ const MOTIVO_LABEL: Record<string, string> = {
   outro: 'Outro',
 }
 
-const AREA01_URL = process.env.NEXT_PUBLIC_AREA01_URL ?? 'https://area01-frontend.pages.dev'
+const AREA01_URL = process.env.NEXT_PUBLIC_AREA01_URL ?? 'https://plura.app.br'
 
 function CardDenuncia({ d, onAtualizar }: { d: Denuncia; onAtualizar: (status: StatusDenuncia, obs?: string) => Promise<void> }) {
   const [obs, setObs] = useState(d.observacao_admin ?? '')
