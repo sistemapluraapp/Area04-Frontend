@@ -7,6 +7,7 @@ import Grain from '@/components/Grain'
 import Footer from '@/components/Footer'
 import { AlertIcon } from '@/components/icons'
 import { api, type AvaliacaoSinalizada } from '@/lib/api'
+import { useTituloPagina } from '@/lib/useTituloPagina'
 
 type Aba = 'todas' | 'sinalizadas'
 
@@ -16,6 +17,7 @@ const ABAS: { id: Aba; label: string }[] = [
 ]
 
 export default function ModeracaoPage() {
+  useTituloPagina('Avaliações sinalizadas')
   const pronto = useRequireAuth()
   const [aba, setAba] = useState<Aba>('todas')
   const [avaliacoes, setAvaliacoes] = useState<AvaliacaoSinalizada[]>([])

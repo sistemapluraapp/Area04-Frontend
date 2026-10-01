@@ -9,6 +9,7 @@ import Grain from '@/components/Grain'
 import Footer from '@/components/Footer'
 import { ArrowDownIcon, ArrowUpIcon, PlusIcon, TrashIcon } from '@/components/icons'
 import { api, type Filtro } from '@/lib/api'
+import { useTituloPagina } from '@/lib/useTituloPagina'
 
 type Tipo = Filtro['tipo']
 
@@ -425,6 +426,7 @@ function GrupoCategoria({
 }
 
 export default function FiltrosPage() {
+  useTituloPagina('Necessidades')
   const pronto = useRequireAuth()
   const [filtros, setFiltros] = useState<Filtro[]>([])
   const [erro, setErro] = useState('')

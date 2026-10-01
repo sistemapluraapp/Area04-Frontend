@@ -8,8 +8,10 @@ import Grain from '@/components/Grain'
 import Footer from '@/components/Footer'
 import { CertificateIcon } from '@/components/icons'
 import { api, type Certificado } from '@/lib/api'
+import { useTituloPagina } from '@/lib/useTituloPagina'
 
 export default function CertificadosPage() {
+  useTituloPagina('Certificados')
   const pronto = useRequireAuth()
   const [certificados, setCertificados] = useState<Certificado[]>([])
   const [erro, setErro] = useState('')

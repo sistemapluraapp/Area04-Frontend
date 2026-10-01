@@ -5,7 +5,7 @@ name: Deploy Pages (teste)
 # A produção (branch main do projeto) não é alterada.
 on:
   push:
-    branches: [claude/clever-knuth-bx0368]
+    branches: [claude/clever-knuth-bx0368, claude/stoic-babbage-0gea8e]
   workflow_dispatch:
 
 jobs:

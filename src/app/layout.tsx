@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans-loaded' })
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono-loaded' })
 
 export const metadata: Metadata = {
-  title: 'Plura — Admin',
+  title: 'Administração · Plura',
   description: 'Painel administrativo interno — Plura',
 }
 

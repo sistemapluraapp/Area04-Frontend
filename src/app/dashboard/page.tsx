@@ -17,6 +17,7 @@ import GlassCard from '@/components/GlassCard'
 import Grain from '@/components/Grain'
 import Footer from '@/components/Footer'
 import { api, type Estatisticas, type Indicadores, type Pagina } from '@/lib/api'
+import { useTituloPagina } from '@/lib/useTituloPagina'
 
 const EmpreendimentosMap = dynamic(() => import('@/components/EmpreendimentosMap'), {
   ssr: false,
@@ -137,6 +138,7 @@ function ErroBanner({ mensagem }: { mensagem: string }) {
 }
 
 export default function DashboardPage() {
+  useTituloPagina('Indicadores')
   const pronto = useRequireAuth()
   const [dados, setDados] = useState<Indicadores | null>(null)
   const [erro, setErro] = useState('')

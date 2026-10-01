@@ -10,10 +10,12 @@ import Footer from '@/components/Footer'
 import { KeyIcon } from '@/components/icons'
 import { api, type ConviteGov } from '@/lib/api'
 import { UFS } from '@/lib/uf'
+import { useTituloPagina } from '@/lib/useTituloPagina'
 
 const AREA03_FRONTEND_URL = process.env.NEXT_PUBLIC_AREA03_FRONTEND_URL ?? 'https://gov.plura.app.br'
 
 export default function ConvitesGovPage() {
+  useTituloPagina('Convites Gov')
   const pronto = useRequireAuth()
   const [cidade, setCidade] = useState('')
   const [uf, setUf] = useState('')

@@ -12,8 +12,10 @@ import { EmailIcon, LockIcon, EyeIcon, UserIcon, KeyIcon } from '@/components/ic
 import { api } from '@/lib/api'
 import { salvarSessao } from '@/lib/auth'
 import { LOGO_DATA_URI } from '@/lib/logo'
+import { useTituloPagina } from '@/lib/useTituloPagina'
 
 export default function SignupPage() {
+  useTituloPagina('Criar conta de administrador')
   const router = useRouter()
   const [codigo, setCodigo] = useState('')
   const [nome, setNome] = useState('')

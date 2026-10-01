@@ -27,6 +27,7 @@ import {
   type EstatisticasPorAno,
   type LoginsPorDia,
 } from '@/lib/api'
+import { useTituloPagina } from '@/lib/useTituloPagina'
 
 type Aba = 'usuarios' | 'gov' | 'paginas'
 
@@ -294,6 +295,7 @@ function GraficoLogins({ dados }: { dados: LoginsPorDia }) {
 }
 
 export default function ContasPage() {
+  useTituloPagina('Contas')
   const pronto = useRequireAuth()
   const [aba, setAba] = useState<Aba>('usuarios')
   const [usuarios, setUsuarios] = useState<Usuario[]>([])

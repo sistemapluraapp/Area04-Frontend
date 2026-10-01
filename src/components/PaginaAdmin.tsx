@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import AdminNav, { useRequireAuth } from './AdminNav'
 import Grain from './Grain'
 import Footer from './Footer'
+import { useTituloPagina } from '@/lib/useTituloPagina'
 
 export function Abas<T extends string>({ abas, atual, onChange }: { abas: { id: T; label: string }[]; atual: T; onChange: (id: T) => void }) {
   return (
@@ -67,6 +68,7 @@ export default function PaginaAdmin({
   children: ReactNode
 }) {
   const pronto = useRequireAuth()
+  useTituloPagina(titulo)
   if (!pronto) return null
 
   return (
