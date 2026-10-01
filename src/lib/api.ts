@@ -297,7 +297,41 @@ export interface Notificacao {
   metadata: Record<string, unknown>
 }
 
+// E-mails e boas-vindas (modelos editáveis)
+export type PosicaoImagem = 'topo' | 'assinatura' | 'nenhuma'
+export type EstiloAcao = 'botao' | 'imagem'
+
+export interface ModeloComunicacao {
+  chave: string
+  tipo: 'email' | 'pagina'
+  nome: string
+  descricao: string | null
+  assunto: string | null
+  titulo: string | null
+  corpo_html: string | null
+  botao_texto: string | null
+  imagem_url: string | null
+  imagem_link: string | null
+  imagem_posicao: PosicaoImagem
+  acao_estilo: EstiloAcao
+  atualizado_em: string
+  atualizado_por: string | null
+}
+
+export type RascunhoModelo = Pick<ModeloComunicacao, 'assunto' | 'titulo' | 'corpo_html' | 'botao_texto' | 'imagem_url' | 'imagem_link' | 'imagem_posicao' | 'acao_estilo'>
+
 export const api = {
+  listarModelos: () => request<{ modelos: ModeloComunicacao[] }>('/comunicacao'),
+
+  salvarModelo: (chave: string, body: RascunhoModelo) =>
+    request<ModeloComunicacao>(`/comunicacao/${chave}`, { method: 'PUT', body: JSON.stringify(body) }),
+
+  previaModelo: (chave: string, body: RascunhoModelo) =>
+    request<{ assunto: string; html: string }>(`/comunicacao/${chave}/previa`, { method: 'POST', body: JSON.stringify(body) }),
+
+  testarModelo: (chave: string, body: RascunhoModelo) =>
+    request<{ enviado_para: string }>(`/comunicacao/${chave}/teste`, { method: 'POST', body: JSON.stringify(body) }),
+
   consumoInfraestrutura: () => request<ConsumoInfraestrutura>('/infraestrutura'),
 
   atualizarLimiteInfraestrutura: (recurso: string, limite: number) =>

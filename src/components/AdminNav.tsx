@@ -9,6 +9,7 @@ import {
   IconChartBar,
   IconHeartHandshake,
   IconLogout,
+  IconMail,
   IconMenu2,
   IconMessageCircle,
   IconServer,
@@ -48,6 +49,10 @@ const GRUPOS: { titulo: string; links: Link[] }[] = [
       { href: '/contas', label: 'Contas', Icone: IconUsers },
       { href: '/convites-gov', label: 'Convites Gov', Icone: IconBuildingBank },
     ],
+  },
+  {
+    titulo: 'Comunicação',
+    links: [{ href: '/comunicacao', label: 'E-mails e boas-vindas', Icone: IconMail }],
   },
   {
     titulo: 'Configurações',
