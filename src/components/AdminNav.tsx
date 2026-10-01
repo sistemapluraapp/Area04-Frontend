@@ -13,53 +13,56 @@ import {
   IconMenu2,
   IconMessageCircle,
   IconServer,
+  IconShieldLock,
   IconTags,
   IconUsers,
   IconX,
   type Icon,
 } from '@tabler/icons-react'
 import { limparSessao, obterUsuarioSalvo, estaLogado } from '@/lib/auth'
+import { limparCacheAcesso, useMeuAcesso } from '@/lib/acesso'
 import { LOGO_DATA_URI } from '@/lib/logo'
 import NotificationBell from './NotificationBell'
 import ModoToggle from './ModoToggle'
 import PainelAcessibilidade from './PainelAcessibilidade'
 
 // inclui: outras rotas em que o item fica marcado como ativo
-type Link = { href: string; label: string; Icone: Icon; inclui?: string[] }
+type Link = { href: string; label: string; Icone: Icon; inclui?: string[]; permissao: string }
 
 // Itens agrupados por assunto, na ordem em que o admin costuma trabalhar.
 const GRUPOS: { titulo: string; links: Link[] }[] = [
   {
     titulo: 'Visão geral',
     links: [
-      { href: '/dashboard', label: 'Indicadores', Icone: IconChartBar },
-      { href: '/infraestrutura', label: 'Consumo de recursos em infraestrutura', Icone: IconServer },
+      { href: '/dashboard', label: 'Indicadores', Icone: IconChartBar, permissao: 'indicadores' },
+      { href: '/infraestrutura', label: 'Consumo de recursos em infraestrutura', Icone: IconServer, permissao: 'indicadores' },
     ],
   },
   {
     titulo: 'Moderação',
     links: [
-      { href: '/comentarios', label: 'Comentários, avaliações e denúncias', Icone: IconMessageCircle, inclui: ['/moderacao', '/denuncias'] },
-      { href: '/certificados', label: 'Certificados', Icone: IconCertificate },
+      { href: '/comentarios', label: 'Comentários, avaliações e denúncias', Icone: IconMessageCircle, inclui: ['/moderacao', '/denuncias'], permissao: 'moderacao' },
+      { href: '/certificados', label: 'Certificados', Icone: IconCertificate, permissao: 'certificados' },
     ],
   },
   {
     titulo: 'Contas e acessos',
     links: [
-      { href: '/contas', label: 'Contas', Icone: IconUsers },
-      { href: '/convites-gov', label: 'Convites Gov', Icone: IconBuildingBank },
+      { href: '/contas', label: 'Contas', Icone: IconUsers, permissao: 'contas' },
+      { href: '/convites-gov', label: 'Convites Gov', Icone: IconBuildingBank, permissao: 'contas' },
+      { href: '/administradores', label: 'Administradores e logs', Icone: IconShieldLock, permissao: 'administradores' },
     ],
   },
   {
     titulo: 'Comunicação',
-    links: [{ href: '/comunicacao', label: 'E-mails e boas-vindas', Icone: IconMail }],
+    links: [{ href: '/comunicacao', label: 'E-mails e boas-vindas', Icone: IconMail, permissao: 'comunicacao' }],
   },
   {
     titulo: 'Configurações',
     links: [
-      { href: '/acessibilidade', label: 'Acessibilidade', Icone: IconAccessible },
-      { href: '/catalogo', label: 'Catálogo', Icone: IconTags },
-      { href: '/filtros', label: 'Necessidades', Icone: IconHeartHandshake },
+      { href: '/acessibilidade', label: 'Acessibilidade', Icone: IconAccessible, permissao: 'configuracoes' },
+      { href: '/catalogo', label: 'Catálogo', Icone: IconTags, permissao: 'configuracoes' },
+      { href: '/filtros', label: 'Necessidades', Icone: IconHeartHandshake, permissao: 'configuracoes' },
     ],
   },
 ]
@@ -98,7 +101,8 @@ export default function AdminNav({ atual }: { atual: string }) {
   const router = useRouter()
   const usuario = obterUsuarioSalvo()
   const [menuAberto, setMenuAberto] = useState(false)
-  const nomeUsuario = usuario?.nome ?? usuario?.email ?? ''
+  const acesso = useMeuAcesso()
+  const nomeUsuario = acesso?.nome || usuario?.nome || usuario?.email || ''
 
   useEffect(() => {
     if (!menuAberto) return
@@ -109,6 +113,7 @@ export default function AdminNav({ atual }: { atual: string }) {
 
   function sair() {
     limparSessao()
+    limparCacheAcesso()
     router.push('/login')
   }
 
@@ -125,7 +130,9 @@ export default function AdminNav({ atual }: { atual: string }) {
         </div>
 
         <nav style={{ flex: 1, overflowY: 'auto', padding: '0.25rem 0.75rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          {GRUPOS.map((grupo) => (
+          {GRUPOS.map((grupo) => ({ ...grupo, links: grupo.links.filter((l) => !acesso || acesso.permissoes.includes(l.permissao)) }))
+            .filter((grupo) => grupo.links.length > 0)
+            .map((grupo) => (
             <div key={grupo.titulo}>
               <p style={{ margin: '0 0 0.375rem', padding: '0 0.625rem', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--c-text-3)' }}>
                 {grupo.titulo}

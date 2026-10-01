@@ -13,6 +13,7 @@ import { api } from '@/lib/api'
 import { salvarSessao } from '@/lib/auth'
 import { LOGO_DATA_URI } from '@/lib/logo'
 import { useTituloPagina } from '@/lib/useTituloPagina'
+import { destinoInicial } from '@/lib/destinoInicial'
 
 export default function LoginPage() {
   useTituloPagina('Entrar no painel administrativo')
@@ -38,9 +39,11 @@ export default function LoginPage() {
     try {
       const auth = await api.login({ email: email.trim(), password })
       salvarSessao(auth)
-      router.push('/dashboard')
-    } catch {
-      setErrors({ general: 'E-mail ou senha incorretos' })
+      const acesso = await api.meuAcesso().catch(() => null)
+      router.push(destinoInicial(acesso?.admin))
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : ''
+      setErrors({ general: /acesso|convite/i.test(msg) ? msg : 'E-mail ou senha incorretos' })
     } finally {
       setLoading(false)
     }
@@ -135,10 +138,7 @@ export default function LoginPage() {
           </form>
 
           <p style={{ textAlign: 'center', fontSize: '0.9375rem', color: 'var(--c-text-2)', marginTop: '1.75rem' }}>
-            Tem um código de administrador?{' '}
-            <a href="/signup" style={{ color: 'var(--c-text-blue)', fontWeight: 600, textDecoration: 'none' }}>
-              Criar conta →
-            </a>
+            Novos administradores entram por convite enviado por e-mail.
           </p>
         </GlassCard>
 

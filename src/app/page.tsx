@@ -2,7 +2,9 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { api } from '@/lib/api'
 import { estaLogado } from '@/lib/auth'
+import { destinoInicial } from '@/lib/destinoInicial'
 import { useTituloPagina } from '@/lib/useTituloPagina'
 
 export default function HomePage() {
@@ -10,7 +12,11 @@ export default function HomePage() {
   const router = useRouter()
 
   useEffect(() => {
-    router.replace(estaLogado() ? '/dashboard' : '/login')
+    if (!estaLogado()) return router.replace('/login')
+    api
+      .meuAcesso()
+      .then(({ admin }) => router.replace(destinoInicial(admin)))
+      .catch(() => router.replace('/login'))
   }, [router])
 
   return null

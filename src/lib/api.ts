@@ -16,7 +16,8 @@ function redirecionarParaLogin() {
   if (
     typeof window !== 'undefined' &&
     window.location.pathname !== '/login' &&
-    window.location.pathname !== '/signup'
+    window.location.pathname !== '/signup' &&
+    window.location.pathname !== '/aceitar-convite'
   ) {
     window.location.href = '/login'
   }
@@ -72,6 +73,52 @@ async function request<T>(path: string, options: RequestInit = {}, isRetry = fal
   }
 
   return data as T
+}
+
+export interface PermissaoDisponivel {
+  codigo: string
+  rotulo: string
+}
+
+export interface AdminLogado {
+  id: string
+  nome: string
+  email: string
+  permissoes: string[]
+}
+
+export interface Administrador {
+  id: string
+  nome: string | null
+  email: string | null
+  ativo: boolean
+  permissoes: string[]
+  created_at: string
+}
+
+export interface ConviteAdmin {
+  id: string
+  nome: string
+  email: string
+  permissoes: string[]
+  expira_em: string
+  criado_em: string
+}
+
+export interface LogAdmin {
+  id: number
+  admin_id: string
+  admin_nome: string | null
+  admin_email: string | null
+  acao: string
+  funcionalidade: string | null
+  criado_em: string
+}
+
+export interface FiltrosLog {
+  de?: string
+  ate?: string
+  admin?: string
 }
 
 export interface AuthResponse {
@@ -337,11 +384,42 @@ export const api = {
   atualizarLimiteInfraestrutura: (recurso: string, limite: number) =>
     request<{ recurso: string; limite: number }>(`/infraestrutura/limites/${recurso}`, { method: 'PATCH', body: JSON.stringify({ limite }) }),
 
-  signup: (body: { codigo: string; nome: string; email: string; password: string }) =>
-    request<AuthResponse | { message: string; pending_email_confirmation: true }>('/auth/signup', {
-      method: 'POST',
-      body: JSON.stringify(body),
-    }),
+  // Administradores, permissões e logs
+  meuAcesso: () => request<{ admin: AdminLogado; permissoes_disponiveis: PermissaoDisponivel[] }>('/me'),
+
+  listarAdmins: () => request<{ admins: Administrador[]; convites: ConviteAdmin[]; permissoes_disponiveis: PermissaoDisponivel[] }>('/admins'),
+
+  atualizarAdmin: (id: string, body: { permissoes?: string[]; ativo?: boolean }) =>
+    request<Administrador>(`/admins/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+
+  convidarAdmin: (body: { nome: string; email: string; permissoes: string[] }) =>
+    request<ConviteAdmin & { aviso?: string; link_convite?: string }>('/admins/convites', { method: 'POST', body: JSON.stringify(body) }),
+
+  reenviarConviteAdmin: (id: string) =>
+    request<ConviteAdmin & { aviso?: string; link_convite?: string }>(`/admins/convites/${id}/reenviar`, { method: 'POST' }),
+
+  cancelarConviteAdmin: (id: string) => request<{ ok: true }>(`/admins/convites/${id}`, { method: 'DELETE' }),
+
+  listarLogs: (filtros: FiltrosLog & { antes_id?: string }) =>
+    request<{ logs: LogAdmin[]; tem_mais: boolean }>(`/logs${montarQuery({ ...filtros, limite: '100' })}`),
+
+  // O CSV vem como arquivo: baixa com o token e entrega ao navegador
+  baixarLogsCsv: async (filtros: FiltrosLog) => {
+    const token = localStorage.getItem('plura_admin_token')
+    const res = await fetch(`${BASE_URL}/logs/csv${montarQuery({ ...filtros })}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+    if (!res.ok) throw new ApiError((await res.json().catch(() => ({})))?.error ?? 'Não foi possível exportar')
+    const url = URL.createObjectURL(await res.blob())
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `logs-plura-${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  },
+
+  verConviteAdmin: (token: string) => request<{ email: string; nome: string }>(`/convites-admin/${encodeURIComponent(token)}`),
+
+  aceitarConviteAdmin: (token: string, senha: string) =>
+    request<AuthResponse>(`/convites-admin/${encodeURIComponent(token)}/aceitar`, { method: 'POST', body: JSON.stringify({ senha }) }),
 
   login: (body: { email: string; password: string }) =>
     request<AuthResponse>('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
