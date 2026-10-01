@@ -10,6 +10,7 @@ import {
   IconHeartHandshake,
   IconLogout,
   IconMail,
+  IconFileText,
   IconMenu2,
   IconMessageCircle,
   IconServer,
@@ -55,7 +56,10 @@ const GRUPOS: { titulo: string; links: Link[] }[] = [
   },
   {
     titulo: 'Comunicação',
-    links: [{ href: '/comunicacao', label: 'E-mails e boas-vindas', Icone: IconMail, permissao: 'comunicacao' }],
+    links: [
+      { href: '/comunicacao', label: 'E-mails e boas-vindas', Icone: IconMail, permissao: 'comunicacao' },
+      { href: '/termos', label: 'Termos e condições', Icone: IconFileText, permissao: 'comunicacao' },
+    ],
   },
   {
     titulo: 'Configurações',

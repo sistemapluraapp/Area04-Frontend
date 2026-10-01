@@ -348,6 +348,16 @@ export interface Notificacao {
 export type PosicaoImagem = 'topo' | 'assinatura' | 'nenhuma'
 export type EstiloAcao = 'botao' | 'imagem'
 
+export interface Termo {
+  chave: string
+  nome: string
+  descricao: string | null
+  titulo: string
+  conteudo_html: string
+  atualizado_em: string
+  atualizado_por: string | null
+}
+
 export interface ModeloComunicacao {
   chave: string
   tipo: 'email' | 'pagina'
@@ -369,6 +379,11 @@ export type RascunhoModelo = Pick<ModeloComunicacao, 'assunto' | 'titulo' | 'cor
 
 export const api = {
   listarModelos: () => request<{ modelos: ModeloComunicacao[] }>('/comunicacao'),
+
+  listarTermos: () => request<{ termos: Termo[] }>('/termos'),
+
+  salvarTermo: (chave: string, body: { titulo: string; conteudo_html: string }) =>
+    request<Termo>(`/termos/${chave}`, { method: 'PUT', body: JSON.stringify(body) }),
 
   salvarModelo: (chave: string, body: RascunhoModelo) =>
     request<ModeloComunicacao>(`/comunicacao/${chave}`, { method: 'PUT', body: JSON.stringify(body) }),
