@@ -7,7 +7,7 @@ import Input from '@/components/Input'
 import Button from '@/components/Button'
 import Grain from '@/components/Grain'
 import Footer from '@/components/Footer'
-import { ArrowDownIcon, ArrowUpIcon, PlusIcon, TrashIcon } from '@/components/icons'
+import { PlusIcon, TrashIcon } from '@/components/icons'
 import { api, type Filtro } from '@/lib/api'
 import { useTituloPagina } from '@/lib/useTituloPagina'
 
@@ -32,7 +32,7 @@ function agruparPorCategoria(filtros: Filtro[]) {
     if (!grupos.has(f.categoria)) grupos.set(f.categoria, [])
     grupos.get(f.categoria)!.push(f)
   }
-  for (const lista of grupos.values()) lista.sort((a, b) => a.ordem - b.ordem)
+  for (const lista of grupos.values()) lista.sort((a, b) => a.rotulo.localeCompare(b.rotulo, 'pt-BR', { sensitivity: 'base' }))
   return grupos
 }
 
@@ -91,17 +91,11 @@ function Switch({ ativo, onChange }: { ativo: boolean; onChange: () => void }) {
 
 function FiltroRow({
   filtro,
-  isPrimeiro,
-  isUltimo,
-  onMover,
   onSalvarRotulo,
   onToggleAtivo,
   onExcluir,
 }: {
   filtro: Filtro
-  isPrimeiro: boolean
-  isUltimo: boolean
-  onMover: (direcao: -1 | 1) => void
   onSalvarRotulo: (rotulo: string) => void
   onToggleAtivo: () => void
   onExcluir: () => void
@@ -128,40 +122,6 @@ function FiltroRow({
         opacity: filtro.ativo ? 1 : 0.5,
       }}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.125rem' }}>
-        <button
-          type="button"
-          disabled={isPrimeiro}
-          onClick={() => onMover(-1)}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--c-text-3)',
-            cursor: isPrimeiro ? 'not-allowed' : 'pointer',
-            opacity: isPrimeiro ? 0.3 : 1,
-            padding: 0,
-            display: 'flex',
-          }}
-        >
-          <ArrowUpIcon />
-        </button>
-        <button
-          type="button"
-          disabled={isUltimo}
-          onClick={() => onMover(1)}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--c-text-3)',
-            cursor: isUltimo ? 'not-allowed' : 'pointer',
-            opacity: isUltimo ? 0.3 : 1,
-            padding: 0,
-            display: 'flex',
-          }}
-        >
-          <ArrowDownIcon />
-        </button>
-      </div>
 
       <input
         value={rotulo}
@@ -315,36 +275,6 @@ function GrupoCategoria({
 }) {
   const [adicionando, setAdicionando] = useState(false)
 
-  async function moverFiltro(filtro: Filtro, direcao: -1 | 1) {
-    const idx = filtros.findIndex((f) => f.id === filtro.id)
-    const vizinho = filtros[idx + direcao]
-    if (!vizinho) return
-    const ordemFiltro = filtro.ordem
-    const ordemVizinho = vizinho.ordem
-    onFiltrosChange((prev) =>
-      prev.map((f) => {
-        if (f.id === filtro.id) return { ...f, ordem: ordemVizinho }
-        if (f.id === vizinho.id) return { ...f, ordem: ordemFiltro }
-        return f
-      })
-    )
-    try {
-      await api.reordenarFiltros([
-        { id: filtro.id, ordem: ordemVizinho },
-        { id: vizinho.id, ordem: ordemFiltro },
-      ])
-    } catch {
-      // reverte em caso de falha
-      onFiltrosChange((prev) =>
-        prev.map((f) => {
-          if (f.id === filtro.id) return { ...f, ordem: ordemFiltro }
-          if (f.id === vizinho.id) return { ...f, ordem: ordemVizinho }
-          return f
-        })
-      )
-    }
-  }
-
   async function salvarRotulo(filtro: Filtro, rotulo: string) {
     onFiltrosChange((prev) => prev.map((f) => (f.id === filtro.id ? { ...f, rotulo } : f)))
     try {
@@ -408,13 +338,10 @@ function GrupoCategoria({
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-        {filtros.map((f, idx) => (
+        {filtros.map((f) => (
           <FiltroRow
             key={f.id}
             filtro={f}
-            isPrimeiro={idx === 0}
-            isUltimo={idx === filtros.length - 1}
-            onMover={(direcao) => moverFiltro(f, direcao)}
             onSalvarRotulo={(rotulo) => salvarRotulo(f, rotulo)}
             onToggleAtivo={() => toggleAtivo(f)}
             onExcluir={() => excluir(f)}
@@ -462,7 +389,7 @@ export default function FiltrosPage() {
             Filtros de acessibilidade
           </h1>
           <p style={{ color: 'var(--c-text-3)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-            Rótulos e ordem exibidos em todo o produto. Suspender oculta o filtro para novas seleções sem apagar dados
+            Rótulos exibidos em todo o produto, em ordem alfabética. Suspender oculta o filtro para novas seleções sem apagar dados
             históricos; excluir é permanente.
           </p>
 

@@ -82,11 +82,15 @@ function BotaoIcone({ onClick, titulo, children, perigo, desativado }: { onClick
 }
 
 // Linha de um item editável (catálogo ou recurso de acessibilidade):
-// ícone, rótulo (salva ao sair do campo), escopo, ativo, ordem e exclusão.
+// ícone, rótulo (salva ao sair do campo), descrição opcional, escopo, ativo e
+// exclusão. Listas são exibidas em ordem alfabética (sem subir/descer).
+export const porRotulo = <T extends { rotulo: string }>(a: T, b: T) => a.rotulo.localeCompare(b.rotulo, 'pt-BR', { sensitivity: 'base' })
+
 export default function ItemEditavel({
   codigo,
   rotulo,
   icone,
+  descricao,
   escopo,
   ativo,
   primeiro,
@@ -100,18 +104,22 @@ export default function ItemEditavel({
   codigo: string
   rotulo: string
   icone: string | null
+  // undefined: o tipo não tem descrição; string/null: mostra o campo
+  descricao?: string | null
   escopo?: Escopo
   ativo: boolean
-  primeiro: boolean
-  ultimo: boolean
+  primeiro?: boolean
+  ultimo?: boolean
   extra?: ReactNode
-  onAtualizar: (patch: { rotulo?: string; icone?: string; escopo?: Escopo; ativo?: boolean }) => void
-  onSubir: () => void
-  onDescer: () => void
+  onAtualizar: (patch: { rotulo?: string; icone?: string; descricao?: string | null; escopo?: Escopo; ativo?: boolean }) => void
+  onSubir?: () => void
+  onDescer?: () => void
   onExcluir: () => void
 }) {
   const [texto, setTexto] = useState(rotulo)
   useEffect(() => setTexto(rotulo), [rotulo])
+  const [textoDescricao, setTextoDescricao] = useState(descricao ?? '')
+  useEffect(() => setTextoDescricao(descricao ?? ''), [descricao])
 
   return (
     <div
@@ -137,6 +145,18 @@ export default function ItemEditavel({
           style={{ ...campoStyle, width: '100%' }}
         />
         <span style={{ fontSize: '0.6875rem', fontFamily: 'var(--font-mono)', color: 'var(--c-text-3)' }}>{codigo}</span>
+        {descricao !== undefined && (
+          <textarea
+            value={textoDescricao}
+            onChange={(e) => setTextoDescricao(e.target.value)}
+            onBlur={() => textoDescricao.trim() !== (descricao ?? '') && onAtualizar({ descricao: textoDescricao.trim() || null })}
+            aria-label={`Descrição de ${rotulo}`}
+            placeholder="Descrição exibida na página (opcional)"
+            maxLength={500}
+            rows={2}
+            style={{ ...campoStyle, width: '100%', marginTop: '0.375rem', resize: 'vertical', lineHeight: 1.45 }}
+          />
+        )}
       </div>
       {extra}
       {escopo && (
@@ -150,12 +170,16 @@ export default function ItemEditavel({
       )}
       <Switch ativo={ativo} onChange={() => onAtualizar({ ativo: !ativo })} />
       <div style={{ display: 'flex', gap: '0.25rem' }}>
-        <BotaoIcone onClick={onSubir} titulo="Subir" desativado={primeiro}>
-          <IconArrowUp size={16} aria-hidden />
-        </BotaoIcone>
-        <BotaoIcone onClick={onDescer} titulo="Descer" desativado={ultimo}>
-          <IconArrowDown size={16} aria-hidden />
-        </BotaoIcone>
+        {onSubir && (
+          <BotaoIcone onClick={onSubir} titulo="Subir" desativado={primeiro}>
+            <IconArrowUp size={16} aria-hidden />
+          </BotaoIcone>
+        )}
+        {onDescer && (
+          <BotaoIcone onClick={onDescer} titulo="Descer" desativado={ultimo}>
+            <IconArrowDown size={16} aria-hidden />
+          </BotaoIcone>
+        )}
         <BotaoIcone onClick={onExcluir} titulo="Excluir" perigo>
           <IconTrash size={16} aria-hidden />
         </BotaoIcone>

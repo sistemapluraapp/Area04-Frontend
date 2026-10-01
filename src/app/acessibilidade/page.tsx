@@ -5,7 +5,7 @@ import { IconPlus, IconTrash } from '@tabler/icons-react'
 import PaginaAdmin, { ErroBanner } from '@/components/PaginaAdmin'
 import GlassCard from '@/components/GlassCard'
 import IconePicker from '@/components/IconePicker'
-import ItemEditavel, { ESCOPO_LABEL, Switch, campoStyle, slugify } from '@/components/ItemEditavel'
+import ItemEditavel, { ESCOPO_LABEL, Switch, campoStyle, slugify, porRotulo } from '@/components/ItemEditavel'
 import { api, type Escopo, type Filtro, type GrupoAcessibilidade } from '@/lib/api'
 
 const botaoPrimario = {
@@ -94,7 +94,7 @@ export default function AcessibilidadePage() {
       if (!mapa.has(r.categoria)) mapa.set(r.categoria, [])
       mapa.get(r.categoria)!.push(r)
     }
-    for (const lista of mapa.values()) lista.sort((a, b) => a.ordem - b.ordem)
+    for (const lista of mapa.values()) lista.sort(porRotulo)
     return mapa
   }, [recursos])
 
@@ -144,22 +144,6 @@ export default function AcessibilidadePage() {
     }
   }
 
-  async function moverRecurso(lista: Filtro[], indice: number, direcao: -1 | 1) {
-    const destino = indice + direcao
-    if (destino < 0 || destino >= lista.length) return
-    const nova = [...lista]
-    ;[nova[indice], nova[destino]] = [nova[destino], nova[indice]]
-    const base = Math.min(...lista.map((r) => r.ordem))
-    const reordenada = nova.map((r, n) => ({ ...r, ordem: base + n }))
-    setRecursos((l) => l.map((r) => reordenada.find((x) => x.id === r.id) ?? r))
-    try {
-      await api.reordenarFiltros(reordenada.map((r) => ({ id: r.id, ordem: r.ordem })))
-    } catch (e) {
-      setErro(e instanceof Error ? e.message : 'Erro ao reordenar')
-      carregar()
-    }
-  }
-
   async function excluirRecurso(recurso: Filtro) {
     if (!confirm(`Excluir o recurso "${recurso.rotulo}"? Ele deixa de aparecer nas páginas que o marcaram.`)) return
     try {
@@ -171,7 +155,7 @@ export default function AcessibilidadePage() {
   }
 
   function listaRecursos(lista: Filtro[]) {
-    return lista.map((r, n) => (
+    return lista.map((r) => (
       <ItemEditavel
         key={r.id}
         codigo={r.codigo}
@@ -179,8 +163,6 @@ export default function AcessibilidadePage() {
         icone={r.icone}
         escopo={r.escopo}
         ativo={r.ativo}
-        primeiro={n === 0}
-        ultimo={n === lista.length - 1}
         extra={
           <select
             value={r.categoria}
@@ -198,8 +180,6 @@ export default function AcessibilidadePage() {
           </select>
         }
         onAtualizar={(patch) => atualizarRecurso(r, patch)}
-        onSubir={() => moverRecurso(lista, n, -1)}
-        onDescer={() => moverRecurso(lista, n, 1)}
         onExcluir={() => excluirRecurso(r)}
       />
     ))
@@ -227,7 +207,7 @@ export default function AcessibilidadePage() {
       {carregando && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        {grupos.map((g) => {
+        {[...grupos].sort(porRotulo).map((g) => {
           const lista = porGrupo.get(g.codigo) ?? []
           return (
             <GlassCard key={g.codigo} style={{ padding: '1.25rem', opacity: g.ativo ? 1 : 0.7 }}>

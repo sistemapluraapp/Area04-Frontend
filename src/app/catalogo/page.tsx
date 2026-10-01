@@ -5,7 +5,7 @@ import { IconPlus } from '@tabler/icons-react'
 import PaginaAdmin, { Abas, ErroBanner } from '@/components/PaginaAdmin'
 import GlassCard from '@/components/GlassCard'
 import IconePicker from '@/components/IconePicker'
-import ItemEditavel, { ESCOPO_LABEL, campoStyle, slugify } from '@/components/ItemEditavel'
+import ItemEditavel, { ESCOPO_LABEL, campoStyle, porRotulo, slugify } from '@/components/ItemEditavel'
 import { api, type Escopo, type ItemCatalogo, type TipoCatalogo } from '@/lib/api'
 
 const ABAS: { id: TipoCatalogo; label: string; ajuda: string }[] = [
@@ -34,7 +34,7 @@ export default function CatalogoPage() {
     setErro('')
     api
       .listarCatalogo(tipo)
-      .then((r) => setItens(r.itens))
+      .then((r) => setItens([...r.itens].sort(porRotulo)))
       .catch((e) => setErro(e instanceof Error ? e.message : 'Erro ao carregar'))
       .finally(() => setCarregando(false))
   }, [tipo])
@@ -44,26 +44,11 @@ export default function CatalogoPage() {
   }, [carregar])
 
   async function atualizar(item: ItemCatalogo, patch: Partial<ItemCatalogo>) {
-    setItens((lista) => lista.map((i) => (i.id === item.id ? { ...i, ...patch } : i)))
+    setItens((lista) => lista.map((i) => (i.id === item.id ? { ...i, ...patch } : i)).sort(porRotulo))
     try {
       await api.atualizarItemCatalogo(item.id, patch)
     } catch (e) {
       setErro(e instanceof Error ? e.message : 'Erro ao salvar')
-      carregar()
-    }
-  }
-
-  async function mover(indice: number, direcao: -1 | 1) {
-    const destino = indice + direcao
-    if (destino < 0 || destino >= itens.length) return
-    const lista = [...itens]
-    ;[lista[indice], lista[destino]] = [lista[destino], lista[indice]]
-    const reordenada = lista.map((i, n) => ({ ...i, ordem: n + 1 }))
-    setItens(reordenada)
-    try {
-      await api.reordenarCatalogo(reordenada.map((i) => ({ id: i.id, ordem: i.ordem })))
-    } catch (e) {
-      setErro(e instanceof Error ? e.message : 'Erro ao reordenar')
       carregar()
     }
   }
@@ -93,7 +78,7 @@ export default function CatalogoPage() {
         escopo: TIPOS_COM_ESCOPO.includes(tipo) ? novoEscopo : 'ambos',
         ordem: itens.length + 1,
       })
-      setItens((lista) => [...lista, item])
+      setItens((lista) => [...lista, item].sort(porRotulo))
       setNovoRotulo('')
       setNovoIcone(null)
     } catch (e) {
@@ -110,7 +95,7 @@ export default function CatalogoPage() {
     <PaginaAdmin
       atual="/catalogo"
       titulo="Catálogo"
-      descricao="Listas usadas pelos empreendimentos e pelos usuários. Defina ícone, ordem e onde cada item aparece: B2B (empresas, Área 02), B2G (governo, Área 03) ou ambos."
+      descricao="Listas usadas pelos empreendimentos e pelos usuários, exibidas em ordem alfabética. Defina ícone e onde cada item aparece: B2B (empresas, Área 02), B2G (governo, Área 03) ou ambos. Nos itens de “Antes de ir”, a descrição aparece na página pública."
     >
       <Abas abas={ABAS} atual={tipo} onChange={setTipo} />
       <p style={{ color: 'var(--c-text-2)', fontSize: '0.875rem', marginBottom: '1rem' }}>{aba.ajuda}</p>
@@ -151,19 +136,16 @@ export default function CatalogoPage() {
         <p style={{ color: 'var(--c-text-3)' }}>Nenhum item cadastrado.</p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          {itens.map((item, n) => (
+          {itens.map((item) => (
             <ItemEditavel
               key={item.id}
               codigo={item.codigo}
               rotulo={item.rotulo}
               icone={item.icone}
+              descricao={tipo === 'antes_de_ir' ? item.descricao ?? null : undefined}
               escopo={comEscopo ? item.escopo : undefined}
               ativo={item.ativo}
-              primeiro={n === 0}
-              ultimo={n === itens.length - 1}
               onAtualizar={(patch) => atualizar(item, patch)}
-              onSubir={() => mover(n, -1)}
-              onDescer={() => mover(n, 1)}
               onExcluir={() => excluir(item)}
             />
           ))}

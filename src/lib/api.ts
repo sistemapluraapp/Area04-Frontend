@@ -219,6 +219,7 @@ export interface ItemCatalogo {
   codigo: string
   rotulo: string
   icone: string | null
+  descricao?: string | null
   escopo: Escopo
   ordem: number
   ativo: boolean
@@ -354,7 +355,7 @@ export const api = {
   criarItemCatalogo: (body: { tipo: TipoCatalogo; codigo: string; rotulo: string; icone?: string | null; escopo?: Escopo; ordem?: number }) =>
     request<ItemCatalogo>('/catalogo', { method: 'POST', body: JSON.stringify(body) }),
 
-  atualizarItemCatalogo: (id: string, body: Partial<Pick<ItemCatalogo, 'rotulo' | 'icone' | 'escopo' | 'ordem' | 'ativo'>>) =>
+  atualizarItemCatalogo: (id: string, body: Partial<Pick<ItemCatalogo, 'rotulo' | 'icone' | 'descricao' | 'escopo' | 'ordem' | 'ativo'>>) =>
     request<ItemCatalogo>(`/catalogo/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
 
   reordenarCatalogo: (itens: { id: string; ordem: number }[]) =>
