@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { IconCheck, IconSearch, IconStarFilled, IconX } from '@tabler/icons-react'
-import PaginaAdmin, { Abas, ErroBanner } from '@/components/PaginaAdmin'
+import PaginaAdmin, { Abas, AbasModeracao, ErroBanner } from '@/components/PaginaAdmin'
 import GlassCard from '@/components/GlassCard'
 import { campoStyle } from '@/components/ItemEditavel'
 import { api, type ComentarioModeracao, type StatusComentario } from '@/lib/api'
@@ -153,6 +153,7 @@ export default function ComentariosPage() {
       titulo="Comentários"
       descricao="Todo comentário enviado nas páginas dos empreendimentos passa por aqui antes de ser publicado. Aprove para exibir na página ou reprove para mantê-lo oculto."
     >
+      <AbasModeracao atual="/comentarios" />
       <Abas abas={ABAS} atual={filtro} onChange={setFiltro} />
 
       <div style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>

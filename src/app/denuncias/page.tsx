@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { IconCheck, IconFlag, IconX } from '@tabler/icons-react'
-import PaginaAdmin, { Abas, ErroBanner } from '@/components/PaginaAdmin'
+import PaginaAdmin, { Abas, AbasModeracao, ErroBanner } from '@/components/PaginaAdmin'
 import GlassCard from '@/components/GlassCard'
 import { campoStyle } from '@/components/ItemEditavel'
 import { api, type Denuncia, type StatusDenuncia } from '@/lib/api'
@@ -107,6 +107,7 @@ export default function DenunciasPage() {
       titulo="Denúncias de informação"
       descricao='Enviadas pelos usuários no botão "Essa informação está incorreta?" das páginas dos empreendimentos.'
     >
+      <AbasModeracao atual="/denuncias" />
       <Abas abas={ABAS} atual={status} onChange={setStatus} />
       <ErroBanner mensagem={erro} />
       {carregando && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}

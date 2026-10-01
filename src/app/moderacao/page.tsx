@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import AdminNav, { useRequireAuth } from '@/components/AdminNav'
+import { AbasModeracao } from '@/components/PaginaAdmin'
 import GlassCard from '@/components/GlassCard'
 import Grain from '@/components/Grain'
 import Footer from '@/components/Footer'
@@ -44,8 +45,9 @@ export default function ModeracaoPage() {
         <AdminNav atual="/moderacao" />
         <main id="conteudo" tabIndex={-1} style={{ flex: 1, maxWidth: '860px', margin: '0 auto', padding: '0 1.5rem 3rem', width: '100%' }}>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
-            Moderação de avaliações
+            Avaliações sinalizadas
           </h1>
+          <AbasModeracao atual="/moderacao" />
 
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
             {ABAS.map((a) => (

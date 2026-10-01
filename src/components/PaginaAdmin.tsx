@@ -34,6 +34,33 @@ export function Abas<T extends string>({ abas, atual, onChange }: { abas: { id: 
   )
 }
 
+// Moderação reúne três telas sob um único item do menu: as abas navegam entre elas
+const SECOES_MODERACAO = [
+  { href: '/comentarios', label: 'Comentários' },
+  { href: '/moderacao', label: 'Avaliações sinalizadas' },
+  { href: '/denuncias', label: 'Denúncias' },
+]
+
+export function AbasModeracao({ atual }: { atual: string }) {
+  return (
+    <nav aria-label="Seções da moderação" style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap', marginBottom: '1.5rem', padding: '0.25rem', borderRadius: '0.875rem', border: '1px solid var(--c-divider)', background: 'var(--c-glass-bg-sm)', width: 'fit-content', maxWidth: '100%' }}>
+      {SECOES_MODERACAO.map((s) => {
+        const ativa = s.href === atual
+        return (
+          <a
+            key={s.href}
+            href={s.href}
+            aria-current={ativa ? 'page' : undefined}
+            style={{ padding: '0.5rem 1rem', borderRadius: '0.625rem', fontWeight: 700, fontSize: '0.875rem', textDecoration: 'none', color: ativa ? '#fff' : 'var(--c-text-2)', background: ativa ? 'linear-gradient(135deg,#1a7aff,#0062e6)' : 'transparent' }}
+          >
+            {s.label}
+          </a>
+        )
+      })}
+    </nav>
+  )
+}
+
 export function ErroBanner({ mensagem }: { mensagem: string }) {
   if (!mensagem) return null
   return (

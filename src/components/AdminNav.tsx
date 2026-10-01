@@ -4,11 +4,9 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   IconAccessible,
-  IconAlertTriangle,
   IconBuildingBank,
   IconCertificate,
   IconChartBar,
-  IconFlag,
   IconHeartHandshake,
   IconLogout,
   IconMenu2,
@@ -25,7 +23,8 @@ import NotificationBell from './NotificationBell'
 import ModoToggle from './ModoToggle'
 import PainelAcessibilidade from './PainelAcessibilidade'
 
-type Link = { href: string; label: string; Icone: Icon }
+// inclui: outras rotas em que o item fica marcado como ativo
+type Link = { href: string; label: string; Icone: Icon; inclui?: string[] }
 
 // Itens agrupados por assunto, na ordem em que o admin costuma trabalhar.
 const GRUPOS: { titulo: string; links: Link[] }[] = [
@@ -39,9 +38,7 @@ const GRUPOS: { titulo: string; links: Link[] }[] = [
   {
     titulo: 'Moderação',
     links: [
-      { href: '/comentarios', label: 'Comentários', Icone: IconMessageCircle },
-      { href: '/denuncias', label: 'Denúncias', Icone: IconFlag },
-      { href: '/moderacao', label: 'Avaliações sinalizadas', Icone: IconAlertTriangle },
+      { href: '/comentarios', label: 'Comentários, avaliações e denúncias', Icone: IconMessageCircle, inclui: ['/moderacao', '/denuncias'] },
       { href: '/certificados', label: 'Certificados', Icone: IconCertificate },
     ],
   },
@@ -129,8 +126,8 @@ export default function AdminNav({ atual }: { atual: string }) {
                 {grupo.titulo}
               </p>
               <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                {grupo.links.map(({ href, label, Icone }) => {
-                  const ativo = atual === href
+                {grupo.links.map(({ href, label, Icone, inclui }) => {
+                  const ativo = atual === href || !!inclui?.includes(atual)
                   return (
                     <li key={href}>
                       <a href={href} className="admin-link" data-ativo={ativo} aria-current={ativo ? 'page' : undefined}>
