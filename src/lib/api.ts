@@ -363,6 +363,38 @@ export interface Notificacao {
 export type PosicaoImagem = 'topo' | 'assinatura' | 'nenhuma'
 export type EstiloAcao = 'botao' | 'imagem'
 
+export interface EventoAdm {
+  id: string
+  titulo: string
+  inicio: string
+  fim: string | null
+  local_nome: string | null
+  cidade: string | null
+  uf: string | null
+  pais: string
+  gratuito: boolean | null
+  publicado: boolean
+  total_interessados: number
+  criado_em: string
+  pagina_id: string
+  pagina_nome: string
+  pagina_tipo: string
+}
+
+export interface ResumoEventos {
+  total_eventos: number
+  proximos: number
+  total_interesses: number
+  pessoas_interessadas: number
+}
+
+export interface InteressadoAdm {
+  nome: string
+  cidade: string | null
+  uf: string | null
+  criado_em: string
+}
+
 export interface Termo {
   chave: string
   nome: string
@@ -394,6 +426,13 @@ export type RascunhoModelo = Pick<ModeloComunicacao, 'assunto' | 'titulo' | 'cor
 
 export const api = {
   listarModelos: () => request<{ modelos: ModeloComunicacao[] }>('/comunicacao'),
+
+  eventosAdm: (f: { de?: string; ate?: string; q?: string }) => {
+    const p = new URLSearchParams(Object.entries(f).filter(([, v]) => v) as [string, string][])
+    return request<{ eventos: EventoAdm[]; resumo: ResumoEventos }>(`/eventos?${p.toString()}`)
+  },
+
+  interessadosEventoAdm: (id: string) => request<{ interessados: InteressadoAdm[] }>(`/eventos/${id}/interessados`),
 
   listarTermos: () => request<{ termos: Termo[] }>('/termos'),
 

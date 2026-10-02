@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   IconAccessible,
+  IconCalendarEvent,
   IconBuildingBank,
   IconCertificate,
   IconChartBar,
@@ -36,6 +37,7 @@ const GRUPOS: { titulo: string; links: Link[] }[] = [
     titulo: 'Visão geral',
     links: [
       { href: '/dashboard', label: 'Indicadores', Icone: IconChartBar, permissao: 'indicadores' },
+      { href: '/eventos', label: 'Eventos e interessados', Icone: IconCalendarEvent, permissao: 'indicadores' },
       { href: '/infraestrutura', label: 'Consumo de recursos em infraestrutura', Icone: IconServer, permissao: 'indicadores' },
     ],
   },
