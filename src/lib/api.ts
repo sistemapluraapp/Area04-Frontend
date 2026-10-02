@@ -51,7 +51,7 @@ async function tentarRenovarSessao(): Promise<boolean> {
   }
 }
 
-async function request<T>(path: string, options: RequestInit = {}, isRetry = false): Promise<T> {
+export async function request<T>(path: string, options: RequestInit = {}, isRetry = false): Promise<T> {
   const headers = new Headers(options.headers)
   headers.set('Content-Type', 'application/json')
 
@@ -198,12 +198,27 @@ export interface Certificado {
 
 export interface ConviteGov {
   token: string
+  pais: string
   cidade: string
-  uf?: string | null
+  uf: string | null
+  descricao: string | null
+  email: string | null
   criado_em: string
+  criado_por: string | null
   expira_em: string
   usado: boolean
   usado_em: string | null
+  cancelado_em: string | null
+  link: string
+}
+
+export interface NovoConviteGov {
+  pais: string
+  uf: string | null
+  cidade: string
+  descricao?: string
+  expira_em: string
+  email?: string
 }
 
 export interface Estatisticas {
@@ -542,8 +557,12 @@ export const api = {
   atualizarCertificado: (id: string, status: 'aprovado' | 'reprovado') =>
     request<Certificado>(`/certificados/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }),
 
-  criarConvite: (body: { cidade: string; uf?: string; dias_validade?: number }) =>
-    request<ConviteGov>('/convites-gov', { method: 'POST', body: JSON.stringify(body) }),
+  criarConvite: (body: NovoConviteGov) =>
+    request<ConviteGov & { email_enviado?: boolean; aviso?: string }>('/convites-gov', { method: 'POST', body: JSON.stringify(body) }),
+
+  reenviarConviteGov: (token: string) => request<{ ok: true }>(`/convites-gov/${token}/reenviar`, { method: 'POST' }),
+
+  cancelarConviteGov: (token: string) => request<{ ok: true }>(`/convites-gov/${token}`, { method: 'DELETE' }),
 
   listarConvites: () => request<{ convites: ConviteGov[] }>('/convites-gov'),
 
