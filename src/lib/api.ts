@@ -17,6 +17,8 @@ function redirecionarParaLogin() {
     typeof window !== 'undefined' &&
     window.location.pathname !== '/login' &&
     window.location.pathname !== '/signup' &&
+    window.location.pathname !== '/esqueci-senha' &&
+    window.location.pathname !== '/redefinir-senha' &&
     window.location.pathname !== '/aceitar-convite'
   ) {
     window.location.href = '/login'
