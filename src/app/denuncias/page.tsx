@@ -6,6 +6,7 @@ import PaginaAdmin, { Abas, AbasModeracao, ErroBanner } from '@/components/Pagin
 import GlassCard from '@/components/GlassCard'
 import { campoStyle } from '@/components/ItemEditavel'
 import { api, type Denuncia, type StatusDenuncia } from '@/lib/api'
+import Carregando from '@/components/Carregando'
 
 const ABAS: { id: StatusDenuncia; label: string }[] = [
   { id: 'pendente', label: 'Pendentes' },
@@ -110,7 +111,7 @@ export default function DenunciasPage() {
       <AbasModeracao atual="/denuncias" />
       <Abas abas={ABAS} atual={status} onChange={setStatus} />
       <ErroBanner mensagem={erro} />
-      {carregando && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+      {carregando && <Carregando />}
       {!carregando && denuncias.length === 0 && !erro && <p style={{ color: 'var(--c-text-3)' }}>Nenhuma denúncia aqui.</p>}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1rem' }}>
         {denuncias.map((d) => (

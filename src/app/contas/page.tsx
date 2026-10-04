@@ -28,6 +28,7 @@ import {
   type LoginsPorDia,
 } from '@/lib/api'
 import { useTituloPagina } from '@/lib/useTituloPagina'
+import Carregando from '@/components/Carregando'
 
 type Aba = 'usuarios' | 'gov' | 'paginas'
 
@@ -457,7 +458,7 @@ export default function ContasPage() {
                 </select>
               </div>
               {erroEstatAno && <ErroBanner mensagem={erroEstatAno} />}
-              {!estatAno && !erroEstatAno && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+              {!estatAno && !erroEstatAno && <Carregando compacto />}
               {estatAno && <GraficoAno dados={estatAno} />}
             </GlassCard>
 
@@ -504,7 +505,7 @@ export default function ContasPage() {
                 </div>
               </div>
               {erroLogins && <ErroBanner mensagem={erroLogins} />}
-              {!loginsPorDia && !erroLogins && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+              {!loginsPorDia && !erroLogins && <Carregando compacto />}
               {loginsPorDia && <GraficoLogins dados={loginsPorDia} />}
             </GlassCard>
           </div>

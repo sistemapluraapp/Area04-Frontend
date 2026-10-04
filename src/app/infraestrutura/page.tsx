@@ -6,6 +6,7 @@ import PaginaAdmin, { ErroBanner } from '@/components/PaginaAdmin'
 import GlassCard from '@/components/GlassCard'
 import { campoStyle } from '@/components/ItemEditavel'
 import { api, type ConsumoInfraestrutura, type FaseConsumo, type RecursoInfraestrutura } from '@/lib/api'
+import Carregando from '@/components/Carregando'
 
 const FASES: Record<FaseConsumo, { rotulo: string; cor: string; fundo: string; Icone: typeof IconCircleCheck; recomendacao: string }> = {
   tranquilo: { rotulo: 'Tranquilo', cor: 'var(--c-success-text)', fundo: 'var(--c-success-soft)', Icone: IconCircleCheck, recomendacao: 'Nada a fazer por enquanto.' },
@@ -246,7 +247,7 @@ export default function InfraestruturaPage() {
         </div>
       </div>
 
-      {carregando && !dados && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+      {carregando && !dados && <Carregando />}
 
       {dados && (
         <>

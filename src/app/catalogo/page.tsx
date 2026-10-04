@@ -7,6 +7,7 @@ import GlassCard from '@/components/GlassCard'
 import IconePicker from '@/components/IconePicker'
 import ItemEditavel, { ESCOPO_LABEL, campoStyle, porRotulo, slugify } from '@/components/ItemEditavel'
 import { api, type Escopo, type ItemCatalogo, type TipoCatalogo } from '@/lib/api'
+import Carregando from '@/components/Carregando'
 
 const ABAS: { id: TipoCatalogo; label: string; ajuda: string }[] = [
   { id: 'categoria', label: 'Categorias', ajuda: 'Categoria principal do empreendimento (aparece como chip na página e filtra a busca).' },
@@ -131,7 +132,7 @@ export default function CatalogoPage() {
       </GlassCard>
 
       {carregando ? (
-        <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>
+        <Carregando />
       ) : itens.length === 0 ? (
         <p style={{ color: 'var(--c-text-3)' }}>Nenhum item cadastrado.</p>
       ) : (

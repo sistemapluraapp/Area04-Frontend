@@ -10,6 +10,7 @@ import Footer from '@/components/Footer'
 import { PlusIcon, TrashIcon } from '@/components/icons'
 import { api, type Filtro } from '@/lib/api'
 import { useTituloPagina } from '@/lib/useTituloPagina'
+import Carregando from '@/components/Carregando'
 
 type Tipo = Filtro['tipo']
 
@@ -416,7 +417,7 @@ export default function FiltrosPage() {
             ))}
           </div>
 
-          {carregando && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+          {carregando && <Carregando />}
 
           {!carregando && (
             <GlassCard style={{ padding: '1.5rem' }}>

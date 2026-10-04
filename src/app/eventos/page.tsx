@@ -6,6 +6,7 @@ import PaginaAdmin, { ErroBanner } from '@/components/PaginaAdmin'
 import GlassCard from '@/components/GlassCard'
 import { campoStyle } from '@/components/ItemEditavel'
 import { api, type EventoAdm, type InteressadoAdm, type ResumoEventos } from '@/lib/api'
+import Carregando from '@/components/Carregando'
 
 const URL_PUBLICA = 'https://plura.app.br'
 const dataCampo = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -151,7 +152,7 @@ export default function EventosAdmPage() {
                   <tr>
                     <td colSpan={5} style={{ padding: '0.75rem 1rem 1rem', background: 'var(--c-glass-bg-sm)' }}>
                       {!interessados[e.id] ? (
-                        <span style={{ color: 'var(--c-text-3)' }}>Carregando…</span>
+                        <Carregando compacto />
                       ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                           <ul style={{ margin: 0, paddingLeft: '1.125rem', columns: '2 260px' }}>

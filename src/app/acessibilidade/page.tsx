@@ -7,6 +7,7 @@ import GlassCard from '@/components/GlassCard'
 import IconePicker from '@/components/IconePicker'
 import ItemEditavel, { ESCOPO_LABEL, Switch, campoStyle, slugify, porRotulo } from '@/components/ItemEditavel'
 import { api, type Escopo, type Filtro, type GrupoAcessibilidade } from '@/lib/api'
+import Carregando from '@/components/Carregando'
 
 const botaoPrimario = {
   ...campoStyle,
@@ -204,7 +205,7 @@ export default function AcessibilidadePage() {
         </form>
       </GlassCard>
 
-      {carregando && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+      {carregando && <Carregando />}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         {[...grupos].sort(porRotulo).map((g) => {

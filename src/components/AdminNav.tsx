@@ -25,6 +25,10 @@ import { limparSessao, obterUsuarioSalvo, estaLogado } from '@/lib/auth'
 import { limparCacheAcesso, useMeuAcesso } from '@/lib/acesso'
 import { LOGO_DATA_URI } from '@/lib/logo'
 import NotificationBell from './NotificationBell'
+import NavPrincipal from './NavPrincipal'
+
+// Início do menu: a busca pública (o ADM tem login próprio, separado)
+const AREA01_URL = process.env.NEXT_PUBLIC_AREA01_URL ?? 'https://plura.app.br'
 import ModoToggle from './ModoToggle'
 import PainelAcessibilidade from './PainelAcessibilidade'
 
@@ -169,8 +173,10 @@ export default function AdminNav({ atual }: { atual: string }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '0.75rem',
-          padding: '0.75rem 1.5rem',
+          flexWrap: 'wrap',
+          columnGap: '0.75rem',
+          rowGap: '0.5rem',
+          padding: '0.75rem clamp(0.75rem, 3vw, 1.5rem)',
           borderBottom: '1px solid var(--c-divider)',
           background: 'var(--c-topbar-bg)',
           backdropFilter: 'blur(12px)',
@@ -186,10 +192,17 @@ export default function AdminNav({ atual }: { atual: string }) {
           </span>
         </div>
 
+        <NavPrincipal
+          inicio={AREA01_URL}
+          minhaArea="/dashboard"
+          agenda="/eventos"
+          voltarPara="/dashboard"
+          notificacoes={<NotificationBell rotulo="Notificações" />}
+        />
+
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
           <PainelAcessibilidade />
           <ModoToggle />
-          <NotificationBell />
           {usuario && (
             <span title={nomeUsuario} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', paddingLeft: '0.625rem', marginLeft: '0.125rem', borderLeft: '1px solid var(--c-divider)' }}>
               <span aria-hidden style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--c-accent-soft)', color: 'var(--c-accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800 }}>

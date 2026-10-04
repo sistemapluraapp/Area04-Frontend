@@ -9,6 +9,7 @@ import Footer from '@/components/Footer'
 import { CertificateIcon } from '@/components/icons'
 import { api, type Certificado } from '@/lib/api'
 import { useTituloPagina } from '@/lib/useTituloPagina'
+import Carregando from '@/components/Carregando'
 
 export default function CertificadosPage() {
   useTituloPagina('Certificados')
@@ -72,7 +73,7 @@ export default function CertificadosPage() {
             </div>
           )}
 
-          {carregando && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+          {carregando && <Carregando />}
 
           {!carregando && certificados.length === 0 && !erro && (
             <p style={{ color: 'var(--c-text-3)' }}>Nenhum certificado pendente.</p>

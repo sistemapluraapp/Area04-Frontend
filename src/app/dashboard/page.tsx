@@ -18,6 +18,7 @@ import Grain from '@/components/Grain'
 import Footer from '@/components/Footer'
 import { api, type Estatisticas, type Indicadores, type Pagina } from '@/lib/api'
 import { useTituloPagina } from '@/lib/useTituloPagina'
+import Carregando from '@/components/Carregando'
 
 const EmpreendimentosMap = dynamic(() => import('@/components/EmpreendimentosMap'), {
   ssr: false,
@@ -184,7 +185,7 @@ export default function DashboardPage() {
 
           {erro && <ErroBanner mensagem={erro} />}
 
-          {!dados && !erro && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+          {!dados && !erro && <Carregando />}
 
           {dados && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1rem' }}>
@@ -207,7 +208,7 @@ export default function DashboardPage() {
           {erroEstatisticas && <ErroBanner mensagem={erroEstatisticas} />}
 
           {!estatisticas && !erroEstatisticas && (
-            <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>
+            <Carregando />
           )}
 
           {serieMensal && (

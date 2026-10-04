@@ -7,6 +7,7 @@ import GlassCard from '@/components/GlassCard'
 import { Switch, campoStyle } from '@/components/ItemEditavel'
 import { api, type Administrador, type ConviteAdmin, type FiltrosLog, type LogAdmin, type PermissaoDisponivel } from '@/lib/api'
 import { useMeuAcesso } from '@/lib/acesso'
+import Carregando from '@/components/Carregando'
 
 type Aba = 'equipe' | 'logs'
 const ABAS: { id: Aba; label: string }[] = [
@@ -267,7 +268,7 @@ function Logs({ admins }: { admins: Administrador[] }) {
           </tbody>
         </table>
       </div>
-      {carregando && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+      {carregando && <Carregando />}
       {temMais && !carregando && (
         <button type="button" onClick={() => carregar(true)} style={{ ...campoStyle, marginTop: '0.75rem', cursor: 'pointer', fontWeight: 600 }}>
           Carregar mais

@@ -6,6 +6,7 @@ import PaginaAdmin, { Abas, AbasModeracao, ErroBanner } from '@/components/Pagin
 import GlassCard from '@/components/GlassCard'
 import { campoStyle } from '@/components/ItemEditavel'
 import { api, type ComentarioModeracao, type StatusComentario } from '@/lib/api'
+import Carregando from '@/components/Carregando'
 
 type Filtro = StatusComentario | 'todos'
 
@@ -171,7 +172,7 @@ export default function ComentariosPage() {
       </div>
 
       <ErroBanner mensagem={erro} />
-      {carregando && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+      {carregando && <Carregando />}
       {!carregando && comentarios.length === 0 && !erro && <p style={{ color: 'var(--c-text-3)' }}>Nenhum comentário encontrado.</p>}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1rem' }}>

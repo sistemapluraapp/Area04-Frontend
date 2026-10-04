@@ -9,6 +9,7 @@ import Footer from '@/components/Footer'
 import { AlertIcon } from '@/components/icons'
 import { api, type AvaliacaoSinalizada } from '@/lib/api'
 import { useTituloPagina } from '@/lib/useTituloPagina'
+import Carregando from '@/components/Carregando'
 
 type Aba = 'todas' | 'sinalizadas'
 
@@ -86,7 +87,7 @@ export default function ModeracaoPage() {
             </div>
           )}
 
-          {carregando && <p style={{ color: 'var(--c-text-3)', fontFamily: 'var(--font-mono)' }}>carregando…</p>}
+          {carregando && <Carregando />}
 
           {!carregando && avaliacoes.length === 0 && !erro && (
             <p style={{ color: 'var(--c-text-3)' }}>

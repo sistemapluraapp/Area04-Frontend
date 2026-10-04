@@ -501,3 +501,26 @@ html[data-movimento='reduzido'] *, html[data-movimento='reduzido'] *::before, ht
 @media (max-width: 820px) {
   .comunicacao-grade { grid-template-columns: 1fr !important; }
 }
+
+/* Menu principal (components/NavPrincipal.tsx): ícone + texto no topo em telas
+   largas; em telas estreitas ocupa uma linha própria, texto embaixo do ícone */
+.nav-principal { display: flex; align-items: center; gap: 0.125rem; min-width: 0; }
+.nav-item {
+  position: relative; display: inline-flex; align-items: center; gap: 0.375rem;
+  height: 2.375rem; padding: 0 0.7rem; border-radius: 0.75rem; border: 1px solid transparent;
+  background: none; color: var(--c-text-2); font: inherit; font-size: 0.8125rem; font-weight: 600;
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+.nav-item:hover { background: var(--c-glass-bg-sm); color: var(--c-text-1); border-color: var(--c-divider); }
+.nav-item[aria-current='page'] { color: var(--c-accent-text); background: var(--c-accent-soft); border-color: var(--c-accent-soft-border); }
+.nav-item:focus-visible { outline: 2px solid var(--c-accent-text); outline-offset: 2px; }
+.nav-item > svg:first-child { width: 20px; height: 20px; flex-shrink: 0; }
+@media (max-width: 1080px) {
+  .nav-principal { order: 10; flex-basis: 100%; justify-content: space-around; border-top: 1px solid var(--c-divider); padding-top: 0.375rem; }
+  .nav-item { flex-direction: column; height: auto; gap: 0.125rem; padding: 0.3rem 0.375rem; font-size: 0.6875rem; }
+}
+
+/* Animação de carregamento (components/Carregando.tsx): anel anti-horário */
+@keyframes plura-giro-anti { to { transform: rotate(-360deg); } }
+.carregando-anel { animation: plura-giro-anti 1.4s linear infinite; transform-origin: 50% 50%; }
+@media (prefers-reduced-motion: reduce) { .carregando-anel { animation: none; } }
