@@ -426,6 +426,27 @@ export interface ModeloComunicacao {
 
 export type RascunhoModelo = Pick<ModeloComunicacao, 'assunto' | 'titulo' | 'corpo_html' | 'botao_texto' | 'imagem_url' | 'imagem_link' | 'imagem_posicao' | 'acao_estilo'>
 
+export interface Etiqueta {
+  id: string
+  titulo: string
+  icone: string | null
+  descricao: string | null
+  ativo: boolean
+  total_paginas: number
+  created_at: string
+}
+
+export interface PaginaEtiquetavel {
+  id: string
+  nome: string
+  tipo: 'privada' | 'publica'
+  cidade: string | null
+  uf: string | null
+  logo_url: string | null
+  etiqueta_id: string | null
+  suspensa: boolean
+}
+
 export const api = {
   listarModelos: () => request<{ modelos: ModeloComunicacao[] }>('/comunicacao'),
 
@@ -532,6 +553,17 @@ export const api = {
     request<GrupoAcessibilidade>(`/grupos-acessibilidade/${codigo}`, { method: 'PATCH', body: JSON.stringify(body) }),
 
   excluirGrupo: (codigo: string) => request<void>(`/grupos-acessibilidade/${codigo}`, { method: 'DELETE' }),
+
+  listarEtiquetas: () => request<{ etiquetas: Etiqueta[] }>('/etiquetas'),
+  criarEtiqueta: (body: { titulo: string; icone: string | null; descricao?: string | null }) =>
+    request<Etiqueta>('/etiquetas', { method: 'POST', body: JSON.stringify(body) }),
+  atualizarEtiqueta: (id: string, body: Partial<Pick<Etiqueta, 'titulo' | 'icone' | 'descricao' | 'ativo'>>) =>
+    request<Etiqueta>(`/etiquetas/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+  excluirEtiqueta: (id: string) => request<void>(`/etiquetas/${id}`, { method: 'DELETE' }),
+  paginasParaEtiquetar: (q: string, soEtiquetadas: boolean) =>
+    request<{ paginas: PaginaEtiquetavel[] }>(`/etiquetas/paginas?q=${encodeURIComponent(q)}${soEtiquetadas ? '&etiquetadas=1' : ''}`),
+  aplicarEtiqueta: (paginaId: string, etiquetaId: string | null) =>
+    request<{ id: string; nome: string; etiqueta_id: string | null }>(`/etiquetas/paginas/${paginaId}`, { method: 'PUT', body: JSON.stringify({ etiqueta_id: etiquetaId }) }),
 
   listarCatalogo: (tipo: TipoCatalogo) => request<{ itens: ItemCatalogo[] }>(`/catalogo?tipo=${tipo}`),
 

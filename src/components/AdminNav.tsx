@@ -16,6 +16,7 @@ import {
   IconMessageCircle,
   IconServer,
   IconShieldLock,
+  IconRosette,
   IconTags,
   IconUsers,
   IconX,
@@ -72,6 +73,7 @@ const GRUPOS: { titulo: string; links: Link[] }[] = [
     links: [
       { href: '/acessibilidade', label: 'Acessibilidade', Icone: IconAccessible, permissao: 'configuracoes' },
       { href: '/catalogo', label: 'Catálogo', Icone: IconTags, permissao: 'configuracoes' },
+      { href: '/etiquetas', label: 'Etiquetas', Icone: IconRosette, permissao: 'configuracoes' },
       { href: '/filtros', label: 'Necessidades', Icone: IconHeartHandshake, permissao: 'configuracoes' },
     ],
   },
