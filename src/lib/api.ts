@@ -331,6 +331,8 @@ export interface RecursoInfraestrutura {
   limite: number
   unidade: 'bytes' | 'usuarios' | 'requisicoes'
   periodo: 'total' | 'mes' | 'dia'
+  // Dia em que o período mensal recomeça (1 = mês do calendário; R2 = dia do ciclo de cobrança)
+  dia_inicio_ciclo: number
   uso: number | null
   percentual: number | null
   fase: FaseConsumo | null

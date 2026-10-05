@@ -22,13 +22,26 @@ const PROXIMO_PLANO: Record<string, string> = {
   autenticacoes: 'Supabase Pro: 100.000 usuários ativos por mês.',
   egress: 'Supabase Pro: 250 GB de tráfego por mês.',
   requisicoes: 'Cloudflare Workers Paid (US$ 5/mês): 10 milhões de requisições por mês.',
+  r2_armazenamento: 'Acima de 10 GB, o R2 cobra US$ 0,015 por GB por mês (ex.: 20 GB ≈ US$ 0,15/mês).',
+  r2_operacoes_a: 'Acima de 1 milhão no ciclo, o R2 cobra US$ 4,50 por milhão de envios.',
+  r2_operacoes_b: 'Acima de 10 milhões no ciclo, o R2 cobra US$ 0,36 por milhão de leituras.',
 }
+
+const ehR2 = (r: RecursoInfraestrutura) => r.recurso.startsWith('r2_')
 
 const PERIODO: Record<RecursoInfraestrutura['periodo'], string> = {
   total: 'Acumulado (não zera)',
   mes: 'Zera todo dia 1º',
   dia: 'Zera à meia-noite UTC (21h em Brasília)',
 }
+
+function textoPeriodo(r: RecursoInfraestrutura) {
+  if (r.periodo === 'mes' && r.dia_inicio_ciclo > 1) return `Zera todo dia ${r.dia_inicio_ciclo} (ciclo de cobrança)`
+  if (r.recurso === 'r2_armazenamento') return 'Espaço ocupado agora (o grátis vale para a média do ciclo)'
+  return PERIODO[r.periodo]
+}
+
+const POR_PERIODO: Record<RecursoInfraestrutura['periodo'], string> = { total: 'no total', mes: 'por ciclo', dia: 'por dia' }
 
 function formatar(valor: number, unidade: RecursoInfraestrutura['unidade']) {
   if (unidade !== 'bytes') return valor.toLocaleString('pt-BR')
@@ -112,7 +125,7 @@ function CardRecurso({ r, painel, onLimite }: { r: RecursoInfraestrutura; painel
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
         <div>
           <h2 style={{ fontSize: '1rem', fontWeight: 700, margin: 0 }}>{r.rotulo}</h2>
-          <p style={{ fontSize: '0.75rem', color: 'var(--c-text-3)', margin: '0.125rem 0 0' }}>{PERIODO[r.periodo]}</p>
+          <p style={{ fontSize: '0.75rem', color: 'var(--c-text-3)', margin: '0.125rem 0 0' }}>{textoPeriodo(r)}</p>
         </div>
         {!indisponivel && <Selo fase={r.fase!} />}
       </div>
@@ -127,7 +140,7 @@ function CardRecurso({ r, painel, onLimite }: { r: RecursoInfraestrutura; painel
           </p>
         ) : r.erro === 'aguardando-token' ? (
           <p style={{ fontSize: '0.875rem', color: 'var(--c-text-2)', lineHeight: 1.55, margin: 0 }}>
-            Aguardando o token de análise do Cloudflare (secret <code>CLOUDFLARE_ANALYTICS_TOKEN</code> no GitHub). Teto do plano: <strong>{formatar(r.limite, r.unidade)}</strong> por dia.
+            Aguardando o token de análise do Cloudflare (secret <code>CLOUDFLARE_ANALYTICS_TOKEN</code> no GitHub). Teto do plano: <strong>{formatar(r.limite, r.unidade)}</strong> {POR_PERIODO[r.periodo]}.
           </p>
         ) : (
           <p style={{ fontSize: '0.875rem', color: 'var(--c-danger-text)', margin: 0 }}>{r.erro ?? 'Leitura indisponível no momento.'}</p>
@@ -145,9 +158,9 @@ function CardRecurso({ r, painel, onLimite }: { r: RecursoInfraestrutura; painel
           {r.fase !== 'tranquilo' && PROXIMO_PLANO[r.recurso] && (
             <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--c-text-2)' }}>Próximo plano — {PROXIMO_PLANO[r.recurso]}</p>
           )}
-          {r.detalhes && r.detalhes.length > 1 && (
+          {r.detalhes && (r.detalhes.length > 1 || (ehR2(r) && r.detalhes.length > 0)) && (
             <details style={{ fontSize: '0.8125rem', color: 'var(--c-text-2)' }}>
-              <summary style={{ cursor: 'pointer', fontWeight: 600 }}>Detalhes por {r.recurso === 'requisicoes' ? 'Worker' : 'projeto'}</summary>
+              <summary style={{ cursor: 'pointer', fontWeight: 600 }}>Detalhes por {r.recurso === 'requisicoes' ? 'Worker' : ehR2(r) ? 'bucket' : 'projeto'}</summary>
               <ul style={{ margin: '0.5rem 0 0', paddingLeft: '1.1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 {r.detalhes.map((d) => (
                   <li key={d.nome}>
@@ -190,6 +203,58 @@ function CardRecurso({ r, painel, onLimite }: { r: RecursoInfraestrutura; painel
   )
 }
 
+// Contador de proximidade da cobrança do Cloudflare R2: o maior percentual
+// entre espaço, envios e leituras mostra quanto falta para sair do grátis.
+function ProximidadeCobrancaR2({ recursos, painel, onLimite }: { recursos: RecursoInfraestrutura[]; painel: string; onLimite: (recurso: string, limite: number) => Promise<void> }) {
+  if (recursos.length === 0) return null
+  const lidos = recursos.filter((r) => r.percentual !== null && r.fase !== null)
+  const maior = lidos.reduce<RecursoInfraestrutura | null>((m, r) => (!m || (r.percentual ?? 0) > (m.percentual ?? 0) ? r : m), null)
+  const aguardando = recursos.some((r) => r.erro === 'aguardando-token')
+  const ciclo = recursos.find((r) => r.dia_inicio_ciclo > 1)?.dia_inicio_ciclo
+
+  return (
+    <section aria-labelledby="titulo-r2" style={{ marginBottom: '2rem' }}>
+      <GlassCard style={{ padding: '1.25rem', marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div>
+            <h2 id="titulo-r2" style={{ fontSize: '1.0625rem', fontWeight: 700, margin: 0 }}>Proximidade da cobrança: Cloudflare R2</h2>
+            <p style={{ fontSize: '0.8125rem', color: 'var(--c-text-2)', margin: '0.25rem 0 0', lineHeight: 1.5 }}>
+              Arquivos enviados nas certificações. O plano grátis cobre 10 GB, 1 milhão de envios e 10 milhões de leituras por ciclo
+              {ciclo ? ` (o ciclo recomeça todo dia ${ciclo})` : ''}. Acima disso, o Cloudflare cobra no cartão cadastrado.
+            </p>
+          </div>
+          {maior?.fase && <Selo fase={maior.fase} />}
+        </div>
+        {maior && maior.percentual !== null && maior.fase ? (
+          <>
+            <Barra percentual={maior.percentual} fase={maior.fase} />
+            <p style={{ margin: 0, fontSize: '0.9375rem' }}>
+              <strong>{maior.percentual.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}% do limite grátis usado</strong>{' '}
+              <span style={{ color: 'var(--c-text-2)' }}>(item mais perto do teto: {maior.rotulo.replace(/ \(.*\)$/, '')})</span>
+            </p>
+            <p style={{ margin: 0, fontSize: '0.8125rem', color: maior.percentual >= 100 ? 'var(--c-danger-text)' : 'var(--c-text-2)' }}>
+              {maior.percentual >= 100
+                ? 'O limite grátis foi ultrapassado: o excedente já está sendo cobrado neste ciclo.'
+                : `Faltam ${(100 - maior.percentual).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}% para começar a cobrança. Além deste painel, o alerta de gasto do Cloudflare avisa por e-mail.`}
+            </p>
+          </>
+        ) : aguardando ? (
+          <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--c-text-2)', lineHeight: 1.55 }}>
+            O contador começa a funcionar quando o token de análise do Cloudflare for cadastrado (secret <code>CLOUDFLARE_ANALYTICS_TOKEN</code> no GitHub do Area04-Backend, permissão “Account Analytics: Read”).
+          </p>
+        ) : (
+          <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--c-danger-text)' }}>{recursos.find((r) => r.erro)?.erro ?? 'Leitura indisponível no momento.'}</p>
+        )}
+      </GlassCard>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '1rem' }}>
+        {recursos.map((r) => (
+          <CardRecurso key={r.recurso} r={r} painel={painel} onLimite={(l) => onLimite(r.recurso, l)} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
 export default function InfraestruturaPage() {
   const [dados, setDados] = useState<ConsumoInfraestrutura | null>(null)
   const [carregando, setCarregando] = useState(true)
@@ -222,7 +287,7 @@ export default function InfraestruturaPage() {
     <PaginaAdmin
       atual="/infraestrutura"
       titulo="Consumo de recursos em infraestrutura"
-      descricao="Uso atual comparado ao teto do plano gratuito. Os dois projetos do Supabase são somados, porque a cota é da organização."
+      descricao="Uso atual comparado ao teto do plano gratuito. Os dois projetos do Supabase são somados, porque a cota é da organização. O Cloudflare R2 (arquivos das certificações) tem um contador próprio de proximidade da cobrança."
       largura={1100}
     >
       <ErroBanner mensagem={erro} />
@@ -251,8 +316,11 @@ export default function InfraestruturaPage() {
 
       {dados && (
         <>
+          <ProximidadeCobrancaR2 recursos={dados.recursos.filter(ehR2)} painel={dados.painel_supabase} onLimite={atualizarLimite} />
+
+          <h2 style={{ fontSize: '1.0625rem', fontWeight: 700, margin: '0 0 0.75rem' }}>Supabase e Cloudflare Workers</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '1rem' }}>
-            {dados.recursos.map((r) => (
+            {dados.recursos.filter((r) => !ehR2(r)).map((r) => (
               <CardRecurso key={r.recurso} r={r} painel={dados.painel_supabase} onLimite={(l) => atualizarLimite(r.recurso, l)} />
             ))}
           </div>
