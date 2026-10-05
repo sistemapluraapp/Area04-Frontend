@@ -7,6 +7,8 @@ import {
   IconCalendarEvent,
   IconBuildingBank,
   IconCertificate,
+  IconFileCertificate,
+  IconLayoutGrid,
   IconChartBar,
   IconHeartHandshake,
   IconLogout,
@@ -50,7 +52,14 @@ const GRUPOS: { titulo: string; links: Link[] }[] = [
     titulo: 'Moderação',
     links: [
       { href: '/comentarios', label: 'Comentários, avaliações e denúncias', Icone: IconMessageCircle, inclui: ['/moderacao', '/denuncias'], permissao: 'moderacao' },
-      { href: '/certificados', label: 'Certificados', Icone: IconCertificate, permissao: 'certificados' },
+    ],
+  },
+  {
+    titulo: 'Certificações',
+    links: [
+      { href: '/certificacoes', label: 'Certificações, etapas e requisitos', Icone: IconCertificate, permissao: 'certificados' },
+      { href: '/certificacoes-pagina', label: 'Página de certificações', Icone: IconLayoutGrid, permissao: 'certificados' },
+      { href: '/certificados', label: 'Solicitações de certificado (modelo antigo)', Icone: IconFileCertificate, permissao: 'certificados' },
     ],
   },
   {

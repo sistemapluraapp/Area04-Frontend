@@ -428,6 +428,77 @@ export interface ModeloComunicacao {
 
 export type RascunhoModelo = Pick<ModeloComunicacao, 'assunto' | 'titulo' | 'corpo_html' | 'botao_texto' | 'imagem_url' | 'imagem_link' | 'imagem_posicao' | 'acao_estilo'>
 
+// ---------- Etapa 8a: certificações ----------
+export type EscopoCertificacao = 'b2b' | 'b2g' | 'ambos'
+export type StatusCertificacao = 'rascunho' | 'publicada' | 'arquivada'
+export type TipoRequisito = 'arquivo' | 'texto' | 'formulario' | 'link' | 'video' | 'vistoria'
+export type TipoCampoFormulario = 'texto_curto' | 'texto_longo' | 'numero' | 'data' | 'sim_nao' | 'opcoes'
+
+export interface CampoFormulario {
+  rotulo: string
+  tipo: TipoCampoFormulario
+  obrigatorio: boolean
+  opcoes?: string[]
+}
+
+export interface RequisitoCertificacao {
+  id?: string
+  titulo: string
+  descricao: string | null
+  tipo: TipoRequisito
+  obrigatorio: boolean
+  config: { campos?: CampoFormulario[]; max_arquivos?: number }
+}
+
+export interface EtapaCertificacao {
+  id?: string
+  titulo: string
+  descricao: string | null
+  modo: 'sequencial' | 'paralela'
+  requisitos: RequisitoCertificacao[]
+}
+
+export interface Certificacao {
+  id: string
+  titulo: string
+  resumo: string | null
+  descricao: string | null
+  imagem_url: string | null
+  icone: string | null
+  escopo: EscopoCertificacao
+  pais: string
+  uf: string | null
+  cidade: string | null
+  validade_meses: number | null
+  status: StatusCertificacao
+  gratuita: boolean
+  preco_centavos: number
+  ordem: number
+  created_at: string
+  updated_at: string
+  total_etapas?: number
+  total_requisitos?: number
+  etapas?: EtapaCertificacao[]
+}
+
+export type CertificacaoEditavel = Partial<Pick<Certificacao, 'titulo' | 'resumo' | 'descricao' | 'imagem_url' | 'icone' | 'escopo' | 'pais' | 'uf' | 'cidade' | 'validade_meses' | 'status' | 'ordem'>>
+
+export interface BlocoPaginaCertificacoes {
+  tipo: 'titulo' | 'texto' | 'imagem' | 'link'
+  texto?: string | null
+  html?: string | null
+  url?: string | null
+  alt?: string | null
+}
+
+export interface PaginaCertificacoes {
+  titulo: string
+  subtitulo: string | null
+  blocos: BlocoPaginaCertificacoes[]
+  atualizado_em?: string
+  atualizado_por?: string | null
+}
+
 export interface Etiqueta {
   id: string
   titulo: string
@@ -555,6 +626,19 @@ export const api = {
     request<GrupoAcessibilidade>(`/grupos-acessibilidade/${codigo}`, { method: 'PATCH', body: JSON.stringify(body) }),
 
   excluirGrupo: (codigo: string) => request<void>(`/grupos-acessibilidade/${codigo}`, { method: 'DELETE' }),
+
+  listarCertificacoes: () => request<{ certificacoes: Certificacao[] }>('/certificacoes'),
+  obterCertificacao: (id: string) => request<Certificacao>(`/certificacoes/${id}`),
+  criarCertificacao: (body: CertificacaoEditavel & { titulo: string }) =>
+    request<Certificacao>('/certificacoes', { method: 'POST', body: JSON.stringify(body) }),
+  atualizarCertificacao: (id: string, body: CertificacaoEditavel) =>
+    request<Certificacao>(`/certificacoes/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+  excluirCertificacao: (id: string) => request<void>(`/certificacoes/${id}`, { method: 'DELETE' }),
+  salvarEstruturaCertificacao: (id: string, etapas: EtapaCertificacao[]) =>
+    request<Certificacao>(`/certificacoes/${id}/estrutura`, { method: 'PUT', body: JSON.stringify({ etapas }) }),
+  obterPaginaCertificacoes: () => request<PaginaCertificacoes>('/certificacoes-pagina'),
+  salvarPaginaCertificacoes: (body: PaginaCertificacoes) =>
+    request<PaginaCertificacoes>('/certificacoes-pagina', { method: 'PUT', body: JSON.stringify(body) }),
 
   listarEtiquetas: () => request<{ etiquetas: Etiqueta[] }>('/etiquetas'),
   criarEtiqueta: (body: { titulo: string; icone: string | null; descricao?: string | null }) =>
