@@ -1,6 +1,6 @@
 import { obterRefreshToken, salvarSessao, limparSessao } from './auth'
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? ''
+export const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? ''
 
 export class ApiError extends Error {}
 

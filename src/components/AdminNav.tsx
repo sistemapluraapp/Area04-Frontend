@@ -9,6 +9,7 @@ import {
   IconCertificate,
   IconFileCertificate,
   IconLayoutGrid,
+  IconClipboardCheck,
   IconChartBar,
   IconHeartHandshake,
   IconLogout,
@@ -58,6 +59,7 @@ const GRUPOS: { titulo: string; links: Link[] }[] = [
     titulo: 'Certificações',
     links: [
       { href: '/certificacoes', label: 'Certificações, etapas e requisitos', Icone: IconCertificate, permissao: 'certificados' },
+      { href: '/certificacoes-inscricoes', label: 'Inscrições e análises', Icone: IconClipboardCheck, permissao: 'certificados' },
       { href: '/certificacoes-pagina', label: 'Página de certificações', Icone: IconLayoutGrid, permissao: 'certificados' },
       { href: '/certificados', label: 'Solicitações de certificado (modelo antigo)', Icone: IconFileCertificate, permissao: 'certificados' },
     ],
