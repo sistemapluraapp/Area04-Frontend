@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   IconAccessible,
+  IconWorldWww,
   IconCalendarEvent,
   IconBuildingBank,
   IconCertificate,
@@ -77,6 +78,7 @@ const GRUPOS: { titulo: string; links: Link[] }[] = [
     links: [
       { href: '/comunicacao', label: 'E-mails e boas-vindas', Icone: IconMail, permissao: 'comunicacao' },
       { href: '/termos', label: 'Termos e condições', Icone: IconFileText, permissao: 'comunicacao' },
+      { href: '/landing', label: 'Landing page (plura.app.br)', Icone: IconWorldWww, permissao: 'comunicacao' },
     ],
   },
   {
