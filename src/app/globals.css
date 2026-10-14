@@ -524,3 +524,8 @@ html[data-movimento='reduzido'] *, html[data-movimento='reduzido'] *::before, ht
 @keyframes plura-giro-anti { to { transform: rotate(-360deg); } }
 .carregando-anel { animation: plura-giro-anti 1.4s linear infinite; transform-origin: 50% 50%; }
 @media (prefers-reduced-motion: reduce) { .carregando-anel { animation: none; } }
+
+/* Tradução (Etapa 10): esconde a barra e o balão do tradutor do Google */
+.goog-te-banner-frame, .skiptranslate > iframe, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+body { top: 0 !important; }
+.goog-text-highlight { background: none !important; box-shadow: none !important; }

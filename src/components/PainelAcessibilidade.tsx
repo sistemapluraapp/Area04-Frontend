@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { IconAccessible, IconContrast, IconHandLoveYou, IconPlayerStopFilled, IconRefresh, IconTextSize, IconVolume, IconWalk, IconX } from '@tabler/icons-react'
+import { IconAccessible, IconContrast, IconLanguage, IconHandLoveYou, IconPlayerStopFilled, IconRefresh, IconTextSize, IconVolume, IconWalk, IconX } from '@tabler/icons-react'
 import {
   EVENTO_ACESSIBILIDADE,
   PADRAO,
@@ -11,6 +11,7 @@ import {
   type TamanhoTexto,
 } from '@/lib/acessibilidade'
 import { useFocoPreso } from '@/lib/useFocoPreso'
+import { IDIOMAS, idiomaAtual, iniciarTraducao, mudarIdioma, type CodigoIdioma } from '@/lib/traducao'
 import Portal from './Portal'
 
 const TAMANHOS: { valor: TamanhoTexto; rotulo: string; nome: string; escala: string }[] = [
@@ -67,11 +68,14 @@ export default function PainelAcessibilidade({ compacto = false }: { compacto?: 
   const [prefs, setPrefs] = useState<PreferenciasAcessibilidade>(PADRAO)
   const [lendo, setLendo] = useState(false)
   const [temVoz, setTemVoz] = useState(false)
+  const [idioma, setIdioma] = useState<CodigoIdioma>('pt')
   const painelRef = useRef<HTMLDivElement>(null)
   useFocoPreso(painelRef, aberto)
 
   useEffect(() => {
     setPrefs(obterPreferencias())
+    setIdioma(idiomaAtual())
+    iniciarTraducao()
     setTemVoz('speechSynthesis' in window)
     const aoMudar = (e: Event) => setPrefs((e as CustomEvent<PreferenciasAcessibilidade>).detail)
     window.addEventListener(EVENTO_ACESSIBILIDADE, aoMudar)
@@ -176,6 +180,27 @@ export default function PainelAcessibilidade({ compacto = false }: { compacto?: 
               descricao="Mostra o botão do VLibras no canto da tela. Toque nele e depois em um texto para ver a tradução."
               icone={<IconHandLoveYou size={22} aria-hidden />}
             />
+
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+              <span aria-hidden style={{ color: 'var(--c-accent-text)', display: 'flex', marginTop: '0.1rem' }}><IconLanguage size={22} aria-hidden /></span>
+              <div style={{ flex: 1 }}>
+                <label htmlFor="pref-idioma" style={{ display: 'block', fontWeight: 700, fontSize: '0.9375rem' }}>Idioma da página</label>
+                <p id="pref-idioma-desc" style={{ margin: '0.125rem 0 0.5rem', fontSize: '0.8125rem', color: 'var(--c-text-2)', lineHeight: 1.45 }}>Tradução automática pelo Google. A página recarrega ao trocar.</p>
+                <select
+                  id="pref-idioma"
+                  aria-describedby="pref-idioma-desc"
+                  value={idioma}
+                  onChange={(e) => mudarIdioma(e.target.value as CodigoIdioma)}
+                  translate="no"
+                  className="notranslate"
+                  style={{ width: '100%', height: '42px', padding: '0 0.75rem', borderRadius: '0.75rem', border: '1px solid var(--c-divider)', background: 'var(--c-input-bg, transparent)', color: 'var(--c-text-1)', fontWeight: 600, fontSize: '0.9375rem', fontFamily: 'inherit' }}
+                >
+                  {IDIOMAS.map((i) => (
+                    <option key={i.codigo} value={i.codigo} lang={i.codigo}>{i.nome}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
               <span aria-hidden style={{ color: 'var(--c-accent-text)', display: 'flex', marginTop: '0.1rem' }}><IconTextSize size={22} aria-hidden /></span>
