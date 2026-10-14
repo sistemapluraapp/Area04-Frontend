@@ -206,7 +206,7 @@ export default function AdminNav({ atual }: { atual: string }) {
         </div>
 
         <NavPrincipal
-          inicio={AREA01_URL}
+          inicio={`${AREA01_URL}/buscar`}
           minhaArea="/dashboard"
           agenda="/eventos"
           voltarPara="/dashboard"
