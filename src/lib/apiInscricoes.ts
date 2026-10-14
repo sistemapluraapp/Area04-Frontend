@@ -44,6 +44,8 @@ export interface InscricaoResumo {
   pagina_uf: string | null
   pagina_logo: string | null
   respostas_pendentes: number
+  renova_id?: string | null
+  avisos_renovacao?: number[]
 }
 
 export interface ArquivoItem {
@@ -108,6 +110,7 @@ export const apiInscricoes = {
     request<RespostaAdm>(`/certificacoes-inscricoes/${id}/vistoria/${requisitoId}`, { method: 'POST', body: JSON.stringify({ data, periodo }) }),
   concluir: (id: string, decisao: 'concluir' | 'reprovar', observacao: string) =>
     request<{ status: StatusInscricao }>(`/certificacoes-inscricoes/${id}/concluir`, { method: 'POST', body: JSON.stringify({ decisao, observacao }) }),
+  lembrete: (id: string) => request<{ ok: true }>(`/certificacoes-inscricoes/${id}/lembrete`, { method: 'POST' }),
   baixarArquivo: async (id: string, requisitoId: string, item: ArquivoItem) => {
     const token = localStorage.getItem('plura_admin_token')
     const res = await fetch(`${BASE_URL}/certificacoes-inscricoes/${id}/arquivo?requisito=${requisitoId}&chave=${encodeURIComponent(item.chave)}`, {

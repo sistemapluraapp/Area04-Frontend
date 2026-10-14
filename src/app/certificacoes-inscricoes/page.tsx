@@ -102,12 +102,14 @@ export default function InscricoesCertificacaoPage() {
                       <strong>{i.pagina_nome}</strong>
                       <span style={{ fontSize: '0.75rem', color: 'var(--c-text-3)' }}>{i.pagina_tipo === 'publica' ? 'Gov' : 'B2B'}{i.pagina_cidade ? ` · ${i.pagina_cidade}/${i.pagina_uf ?? ''}` : ''}</span>
                       <span style={{ padding: '0.1rem 0.55rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, color: st.cor, background: st.fundo }}>{st.texto}</span>
+                      {i.renova_id && <span style={{ padding: '0.1rem 0.55rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--c-text-2)', background: 'var(--c-glass-bg-sm)', border: '1px solid var(--c-divider)' }}>Renovação</span>}
                     </span>
                     <span style={{ display: 'block', fontSize: '0.8125rem', color: 'var(--c-text-2)', marginTop: '0.2rem' }}>
                       {i.certificacao_titulo}
                       {i.status === 'enviada' && ` · enviada em ${dataBr(i.enviada_em)} · ${i.respostas_pendentes} ${i.respostas_pendentes === 1 ? 'item' : 'itens'} para avaliar`}
                       {i.status === 'aprovada' && (i.expira_em ? ` · ${dias !== null && dias < 0 ? `venceu em ${dataBr(i.expira_em)}` : `válida até ${dataBr(i.expira_em)}${dias !== null && dias <= 60 ? ` (${dias} dias)` : ''}`}` : ' · não vence')}
                       {(i.status === 'reprovada' || i.status === 'cancelada') && ` · ${dataBr(i.decidida_em)}`}
+                      {i.status === 'aprovada' && (i.avisos_renovacao?.length ?? 0) > 0 && ` · aviso de renovação enviado`}
                     </span>
                   </span>
                   <IconChevronRight size={18} aria-hidden style={{ color: 'var(--c-text-3)', flexShrink: 0 }} />

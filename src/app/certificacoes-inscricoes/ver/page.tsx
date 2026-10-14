@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { IconArrowLeft, IconCalendarCheck, IconCheck, IconDownload, IconExternalLink, IconLock, IconMessageReport, IconPaperclip, IconRotate, IconX } from '@tabler/icons-react'
+import { IconArrowLeft, IconBellRinging, IconCalendarCheck, IconCheck, IconDownload, IconExternalLink, IconLock, IconMessageReport, IconPaperclip, IconRotate, IconX } from '@tabler/icons-react'
 import PaginaAdmin, { ErroBanner } from '@/components/PaginaAdmin'
 import GlassCard from '@/components/GlassCard'
 import Carregando from '@/components/Carregando'
@@ -184,6 +184,25 @@ function Detalhe() {
           Equipe responsável: {insc.equipe.map((m) => `${m.nome ?? '—'} (${m.papel === 'administrador' ? 'dono' : m.cargo || 'colaborador'})`).join(', ') || '—'}
         </p>
         {insc.observacao_adm && <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem' }}><strong>Observação da última análise:</strong> {insc.observacao_adm}</p>}
+        {insc.renova_id && <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem' }}>Esta inscrição é a <strong>renovação</strong> de uma certificação concedida antes. <a href={`/certificacoes-inscricoes/ver?id=${insc.renova_id}`} style={{ color: 'var(--c-accent-text)' }}>Ver a anterior</a></p>}
+        {insc.status === 'aprovada' && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexWrap: 'wrap', marginTop: '0.875rem' }}>
+            <button type="button" style={botao} onClick={async () => {
+              if (!confirm('Enviar à equipe da página um lembrete para renovar esta certificação?')) return
+              try {
+                await apiInscricoes.lembrete(id)
+                setAviso('Lembrete de renovação enviado à equipe da página (sino e e-mail).')
+              } catch (e) {
+                setErro(e instanceof Error ? e.message : 'Erro ao enviar lembrete')
+              }
+            }}>
+              <IconBellRinging size={16} aria-hidden /> Enviar lembrete de renovação
+            </button>
+            <span style={{ fontSize: '0.75rem', color: 'var(--c-text-3)' }}>
+              Avisos automáticos: 60, 30 e 7 dias antes de vencer e no dia em que vence.{(insc.avisos_renovacao?.length ?? 0) > 0 ? ` Já enviados: ${[...(insc.avisos_renovacao ?? [])].sort((a, b) => b - a).map((d) => (d === 0 ? 'vencimento' : `${d} dias`)).join(', ')}.` : ''}
+            </span>
+          </div>
+        )}
       </GlassCard>
 
       {insc.certificacao.etapas.map((etapa, i) => {
